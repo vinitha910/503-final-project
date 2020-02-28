@@ -2,6 +2,7 @@ from state_space import State, StateSpace
 from node import Node 
 from min_binary_heap import MinBinaryHeap
 from environment import Environment 
+from math import pi 
 
 class AStar():
 	def __init__(self, environment):
@@ -25,7 +26,7 @@ class AStar():
 	def set_goal(self, x_m, y_m, theta_rad):
 		x, y, theta = \
 			self.state_space.continuous_coor_to_discrete(x_m, y_m, theta_rad)
-		state = self.state_space.get_or_create_sta.B(2)ate(x, y, theta)
+		state = self.state_space.get_or_create_state(x, y, theta)
 		self.goal = Node(0, 0, -1, state)
 	
 	def is_goal(self, state):
@@ -41,7 +42,6 @@ class AStar():
 		x_m, y_m, theta_rad = \
 			self.state_space.discrete_coor_to_continuous(
 				state.x, state.y, state.theta)
-
 		for dx, dy, dth in zip(self.dx, self.dy, self.dth):
 			new_x = state.x + dx
 			new_y = state.y + dy
@@ -52,12 +52,13 @@ class AStar():
 			new_x_m, new_y_m = \
 				self.state_space.discrete_position_to_continous(new_x, new_y)
 			
-			if not environment.is_valid(new_x_m, new_y_m, new_theta_rad):
+			if not self.env.is_valid(new_x_m, new_y_m, new_theta_rad):
 				continue 
 
 			new_theta = self.state_space.continuous_angle_to_discrete(new_theta_rad)
 			succs.append(self.state_space.get_or_create_state(new_x, new_y, new_theta))
-
+		return succs
+		
 	def plan(self):
 		self.pq.insert(self.start)
 		self.visited[self.start.state.id] = self.start
