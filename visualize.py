@@ -32,9 +32,12 @@ def visualize(env, path):
     #from https://stackoverflow.com/questions/58360395/plotting-robot-path-and-orientation-using-python-matplotlib
     for i in range(len(path)):
         if ((len(path) > 1 )& (i < len(path)-1)):
+            if (i == 0):
+                plt.plot(path[i][0], path[i][1], color='green', marker='o')
             j = i+1
             connectpoints(path, i, j)
         if (i == len(path)-1):
+            plt.plot(path[i][0], path[i][1], color='red', marker='o')
             #plt.arrow(path[i][0], path[i][1], 1, 1, head_width=100, head_length=100)
     plt.show()
 
