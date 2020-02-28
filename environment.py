@@ -33,10 +33,9 @@ class Obstacle:
             self.corners[i] = (rotated_x, rotated_y) 
 
 class Environment:
-    def __init__ (self, length_m, width_m, resolution_m):
+    def __init__ (self, length_m, width_m):
         self.length_m = length_m
         self.width_m = width_m
-        self.resolution_m = resolution_m
         self.obstacles = []
 
     # checks if x,y is in bounds of environemnt

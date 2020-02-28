@@ -6,9 +6,9 @@ from math import pi
 import time 
 
 class AStar():
-	def __init__(self, environment):
+	def __init__(self, environment, state_space):
 		self.env = environment
-		self.state_space = StateSpace(0.1, 8)
+		self.state_space = state_space
 		self.pq = MinBinaryHeap()
 		self.visited = {}
 		
@@ -24,6 +24,7 @@ class AStar():
 			self.state_space.continuous_coor_to_discrete(x_m, y_m, theta_rad)
 		state = self.state_space.get_or_create_state(x, y, theta)
 		self.start = Node(0, 0, -1, state)
+		# import IPython; IPython.embed()
 
 	# TO DO: Create goal region for non-point robots
 	def set_goal(self, x_m, y_m, theta_rad):
@@ -99,9 +100,15 @@ class AStar():
 			return []
 
 		state_id = self.goal.state.id 
-		states = [state_id]
-		while self.visited[state_id].prev_id != self.start.state.id:
-			state_id = self.visited[state_id].prev_id
-			states.append(state_id)
+		state = self.state_space.get_coord_from_state_id(state_id)
+		x_m, y_m, theta_rad = \
+			self.state_space.discrete_coor_to_continuous(state.x, state.y, state.theta)
+		states = [[x_m, y_m, theta_rad]]
 
-		return states[::-1][1:]
+		while self.visited[state_id].prev_id != -1:
+			state_id = self.visited[state_id].prev_id
+			state = self.state_space.get_coord_from_state_id(state_id)
+			x_m, y_m, theta_rad = \
+				self.state_space.discrete_coor_to_continuous(state.x, state.y, state.theta)
+			states.append([x_m, y_m, theta_rad])
+		return states[::-1]
