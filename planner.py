@@ -3,6 +3,7 @@ from node import Node
 from min_binary_heap import MinBinaryHeap
 from environment import Environment 
 from math import pi 
+import time 
 
 class AStar():
 	def __init__(self, environment):
@@ -17,6 +18,8 @@ class AStar():
 		self.dth = [0, 0, 0, 0, 0, 0, 0, 0, -2*pi/self.state_space.num_theta_vals, 2*pi/self.state_space.num_theta_vals]
 	
 	def set_start(self, x_m, y_m, theta_rad):
+		if not self.env.is_valid(x_m, y_m, theta_rad):
+			sys.exit("[Planner] Invalid start state")
 		x, y, theta = \
 			self.state_space.continuous_coor_to_discrete(x_m, y_m, theta_rad)
 		state = self.state_space.get_or_create_state(x, y, theta)
@@ -24,6 +27,8 @@ class AStar():
 
 	# TO DO: Create goal region for non-point robots
 	def set_goal(self, x_m, y_m, theta_rad):
+		if not self.env.is_valid(x_m, y_m, theta_rad):
+			sys.exit("[Planner] Invalid goal state")
 		x, y, theta = \
 			self.state_space.continuous_coor_to_discrete(x_m, y_m, theta_rad)
 		state = self.state_space.get_or_create_state(x, y, theta)
@@ -58,17 +63,21 @@ class AStar():
 			new_theta = self.state_space.continuous_angle_to_discrete(new_theta_rad)
 			succs.append(self.state_space.get_or_create_state(new_x, new_y, new_theta))
 		return succs
-		
+
+	# Returns whether a solution was found, the number of expansions, and the time taken 
 	def plan(self):
+		start = time.time()
 		self.pq.insert(self.start)
 		self.visited[self.start.state.id] = self.start
+		num_expansions = 0
 
 		while not self.pq.is_empty():
 			parent = self.pq.pop()
+			num_expansions += 1
 			self.visited[parent.state.id] = parent
 			if self.is_goal(parent.state):
 				self.goal = parent
-				return True
+				return True, num_expansions, time.time() - start
 
 			succs = self.get_succs(parent.state)
 			for succ in succs:
@@ -83,7 +92,7 @@ class AStar():
 				elif alt_g < self.visited[succ.id].g and self.visited[succ.id].in_pq:
 					self.visited[succ.id] = self.pq.update(self.visited[succ.id], alt_g, alt_f, parent.state.id)
 
-		return False
+		return False, num_expansions, time.time() - start
 
 	def extract_path(self):
 		if self.goal.state.id == self.start.state.id:
