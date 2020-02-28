@@ -28,8 +28,8 @@ class Obstacle:
         for i in range(len(self.corners)):
             x = self.corners[i][0]
             y = self.corners[i][1]
-            rotated_x = self.x_m + (x - self.x_m)*cos(self.theta_rad) + (y - self.x_m)*sin(self.theta_rad)
-            rotated_y = self.x_m - (x - self.x_m)*sin(self.theta_rad) + (y - self.x_m)*cos(self.theta_rad)
+            rotated_x = self.x_m + (x - self.x_m)*cos(self.theta_rad) + (y - self.y_m)*sin(self.theta_rad)
+            rotated_y = self.y_m - (x - self.x_m)*sin(self.theta_rad) + (y - self.y_m)*cos(self.theta_rad)
             self.corners[i] = (rotated_x, rotated_y) 
 
 class Environment:
