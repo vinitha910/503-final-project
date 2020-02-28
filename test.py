@@ -16,14 +16,13 @@ if __name__ == "__main__":
 	# Make sure all input values are floats
 	# o1 = env.create_obstacle(2.0, 1.0, 2.0, 2.0, pi/4)
 	# o2 = env.create_obstacle(2, 0.5, 2.0, 3.0, 0.0)
+	o1 = env.create_obstacle(0.05, 0.05, 0.8, 0.5, 0.0)
 	planner = AStar(env, state_space)
-	
+	visualize(env, [])
 	# Input x (m), y (m), theta (radians)
 	planner.set_start(0.1, 0.1, 0.0)
-	planner.set_goal(0.2, 0.2, 0.0)
+	planner.set_goal(0.8, 0.8, 0.0)
 	
-	# visualize(env, [])
-
 	# Planner return whether or not it was successful, 
 	# the number of expansions, and time taken 
 	success, num_expansions, time = planner.plan()
@@ -31,3 +30,4 @@ if __name__ == "__main__":
 	# If planner was successful, extract the path
 	if success:
 		path = planner.extract_path()
+		visualize(env, path)
