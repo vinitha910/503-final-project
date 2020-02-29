@@ -48,12 +48,9 @@ class AStar():
 		x_m, y_m, theta_rad = \
 			self.state_space.discrete_coor_to_continuous(
 				state.x, state.y, state.theta)
-		for dx, dy in zip(self.dx, self.dy):
+		for dx, dy, dth in zip(self.dx, self.dy, self.dth):
 			new_x = state.x + dx
 			new_y = state.y + dy
-
-			# theta = self.state_space.discrete_angle_to_continuous(state.theta)
-			# new_theta_rad = self.state_space.normalize_angle_rad(theta + dth)
 
 			# new_x_m, new_y_m = \
 			# 	self.state_space.discrete_position_to_continous(new_x, new_y)
@@ -61,8 +58,11 @@ class AStar():
 			if not self.env.is_valid(new_x, new_y):
 				continue 
 
-			# new_theta = self.state_space.continuous_angle_to_discrete(new_theta_rad)
-			succs.append(self.state_space.get_or_create_state(new_x, new_y, 0))
+			theta = self.state_space.discrete_angle_to_continuous(state.theta)
+			new_theta_rad = self.state_space.normalize_angle_rad(theta + dth)
+			new_theta = self.state_space.continuous_angle_to_discrete(new_theta_rad)
+			
+			succs.append(self.state_space.get_or_create_state(new_x, new_y, new_theta))
 		return succs
 
 	# Returns whether a solution was found, the number of expansions, and the time taken 
@@ -90,7 +90,8 @@ class AStar():
 				# Scale g-value so that h is never greater than g
 				# If h > g we will produce a sub-optimal path because it's as if
 				# we are scaling h by some epsilon
-				alt_f = 100*alt_g + h
+				alt_f = 1000*alt_g + h
+
 				if not self.visited.has_key(succ.id):
 					self.visited[succ.id] = self.pq.insert(Node(alt_g, alt_f, parent.state.id, succ))
 

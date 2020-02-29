@@ -18,22 +18,22 @@ if __name__ == "__main__":
 	
 	# Takes discrete values, divide continuous values by resolution
 	# Input obstacle length, width, x, y
-	o1 = env.create_obstacle(20, 10, 60, 60)
+	o1 = env.create_obstacle(20, 5, 60, 60)
 
 	planner = AStar(env, state_space)
 
 	# Input x (m), y (m), theta (radians)
-	planner.set_start(0.1, 0.1, 0.0)
-	planner.set_goal(0.8, 0.8, 0.0)
+	planner.set_start(0.1, 0.7, 0.0)
+	planner.set_goal(0.7, 0.7, 0.0)
 	
 	# Planner return whether or not it was successful, 
 	# the number of expansions, and time taken 
 	success, num_expansions, time = planner.plan()
-
+	print time
 	# If planner was successful, extract the path
 	if success:
 		path = planner.extract_path()
 		# Remove this when running optimization
-		# vis = Visualizer(env, state_space)
-		# vis.visualize(path)
+		vis = Visualizer(env, state_space)
+		vis.visualize(path)
 

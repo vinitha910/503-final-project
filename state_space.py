@@ -87,6 +87,10 @@ class StateSpace(object):
         return x, y, theta
 
     def get_distance(self, state_1, state_2):
+        x1, y1, th1 = self.discrete_coor_to_continuous(
+            state_1.x, state_1.y, state_1.theta)
+        x2, y2, th2 = self.discrete_coor_to_continuous(
+            state_2.x, state_2.y, state_2.theta)
+
         return np.linalg.norm(
-            [state_2.x - state_1.x,
-             state_2.y - state_1.y]) 
+            [x1 - x2, y1 - y2, th1 - th2]) 
