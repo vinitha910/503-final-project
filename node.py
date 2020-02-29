@@ -10,7 +10,7 @@ class Node:
 		self.state = state
 
 	def parent(self, idx):
-		return (idx - 1)/2
+		return (idx - 1)//2
 
 	def left(self, idx):
 		return 2*idx + 1
