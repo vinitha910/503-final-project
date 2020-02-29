@@ -16,14 +16,14 @@ class MinBinaryHeap():
     # Helper function to print the nodes in the heap
     def print_data(self):
         for i in range(0, self.size):
-            print "(PQID: " + str(self.data[i].pq_id) + ", G: " + str(self.data[i].g) + ", F: " + str(self.data[i].f) + ", NID: " + str(self.data[i].id) + ")"
-        print "\n"
+            print("(PQID: " + str(self.data[i].pq_id) + ", G: " + str(self.data[i].g) + ", F: " + str(self.data[i].f) + ", NID: " + str(self.data[i].id) + ")")
+        print("\n")
 
     # Helper function to print the node cooedinates in the heap
     def print_data_coords(self):
         for i in range(0, self.size):
-            print "(X: " + str(self.data[i].x) + ", Y: " + str(self.data[i].y) + ", M: " + str(self.data[i].mode) +  "G: " + str(self.data[i].g) + ", NID: " + str(self.data[i].id) + ")"
-        print "\n"
+            print("(X: " + str(self.data[i].x) + ", Y: " + str(self.data[i].y) + ", M: " + str(self.data[i].mode) +  "G: " + str(self.data[i].g) + ", NID: " + str(self.data[i].id) + ")")
+        print("\n")
 
     # This function inserts a node into the heap
     # node: The node to insert into the heap
@@ -76,7 +76,7 @@ class MinBinaryHeap():
     # This function returns the node with the lowest priority
     def pop(self):
         if (self.is_empty()):
-            print "ERROR: Cannot pop node; the heap is empty\n"
+            print("ERROR: Cannot pop node; the heap is empty\n")
             return
 
         min_ele = self.data[0]
@@ -104,7 +104,7 @@ class MinBinaryHeap():
         pidx = node.parent(idx)
 
         if (self.is_empty() or (not node.in_pq)):
-            print "ERROR: This node is not the in heap!\n"
+            print("ERROR: This node is not the in heap!\n")
             return
 
         while idx != 0 and self.data[pidx].f > self.data[idx].f:

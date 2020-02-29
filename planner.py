@@ -92,7 +92,7 @@ class AStar():
 				# we are scaling h by some epsilon
 				alt_f = 1000*alt_g + h
 
-				if not self.visited.has_key(succ.id):
+				if not succ.id in self.visited:
 					self.visited[succ.id] = self.pq.insert(Node(alt_g, alt_f, parent.state.id, succ))
 
 				elif alt_g < self.visited[succ.id].g and self.visited[succ.id].in_pq:

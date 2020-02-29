@@ -29,7 +29,7 @@ if __name__ == "__main__":
 	# Planner return whether or not it was successful, 
 	# the number of expansions, and time taken 
 	success, num_expansions, time = planner.plan()
-	print time
+	print(time)
 	# If planner was successful, extract the path
 	if success:
 		path = planner.extract_path()

@@ -50,7 +50,7 @@ class StateSpace(object):
         return int(normalized_theta_rad)
 
     def get_state_id(self, x, y, theta):
-        if self.state_to_id_map.has_key((x, y, theta)):
+        if (x, y, theta) in self.state_to_id_map:
             return self.state_to_id_map[(x, y, theta)]
         return None
 
