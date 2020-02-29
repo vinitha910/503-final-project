@@ -33,23 +33,37 @@ class Visualizer:
         ax.set_xlim([0, self.env.width])
         ax.set_ylim([0, self.env.length])
 
-        #Robot visualization as an arrow:
-        #from https://stackoverflow.com/questions/58360395/plotting-robot-path-and-orientation-using-python-matplotlib
+        robot_h_m = 2.0
+        robot_w_m = 1.0
+        #Robot path visualization:
         for i in range(len(path)):
+            x = path[i][0]
+            y = path[i][1]
+            theta = path[i][2]
             if ((len(path) > 1 )& (i < len(path)-1)):
+                j = i+1
+                #robot = plt.Circle((path[i][0], path[i][1]), robot_w_m, color='pink')
+                corner = self.getLowerCorner(x, y, robot_h_m, robot_w_m)
+                robot = matplotlib.patches.Rectangle((corner[0],corner[1]), robot_w_m, robot_h_m, theta, color='pink')
+                ax.add_artist(robot)
                 if (i == 0):
                     plt.plot(path[i][0], path[i][1], color='green', marker='o')
-                j = i+1
                 self.connectpoints(path, i, j)
             if (i == len(path)-1):
                 plt.plot(path[i][0], path[i][1], color='red', marker='o')
-                #plt.arrow(path[i][0], path[i][1], 1, 1, head_width=100, head_length=100)
         plt.show()
+
+    def getLowerCorner(self, x, y, robot_h_m, robot_w_m):
+        corner = [x - robot_w_m/2, y - robot_h_m/2]
+        #Need to account for the theta, then will be done
+        return corner
 
     def connectpoints(self, path,i,j):
         state = path[i]
         nextState = path[j]
         x1, x2 = state[0], nextState[0]
         y1, y2 = state[1], nextState[1]
-        theta = state[2] #will need to be updated
+        #theta = state[2] #will need to be updated
         plt.plot([x1,x2],[y1,y2],'k-')
+
+
