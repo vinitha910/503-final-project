@@ -3,7 +3,7 @@ from node import Node
 from min_binary_heap import MinBinaryHeap
 from environment import Environment 
 from math import pi 
-import time 
+import time, sys
 
 class AStar():
 	def __init__(self, environment, state_space):
@@ -18,20 +18,20 @@ class AStar():
 		self.dth = [0, 0, 0, 0, 0, 0, 0, 0, -2*pi/self.state_space.num_theta_vals, 2*pi/self.state_space.num_theta_vals]
 	
 	def set_start(self, x_m, y_m, theta_rad):
-		if not self.env.is_valid(x_m, y_m, theta_rad):
-			sys.exit("[Planner] Invalid start state")
 		x, y, theta = \
 			self.state_space.continuous_coor_to_discrete(x_m, y_m, theta_rad)
+		if not self.env.is_valid(x, y):
+			sys.exit("[Planner] Invalid start state")
 		state = self.state_space.get_or_create_state(x, y, theta)
 		self.start = Node(0, 0, -1, state)
 		# import IPython; IPython.embed()
 
 	# TO DO: Create goal region for non-point robots
 	def set_goal(self, x_m, y_m, theta_rad):
-		if not self.env.is_valid(x_m, y_m, theta_rad):
-			sys.exit("[Planner] Invalid goal state")
 		x, y, theta = \
 			self.state_space.continuous_coor_to_discrete(x_m, y_m, theta_rad)
+		if not self.env.is_valid(x, y):
+			sys.exit("[Planner] Invalid goal state")
 		state = self.state_space.get_or_create_state(x, y, theta)
 		self.goal = Node(0, 0, -1, state)
 	
@@ -48,21 +48,21 @@ class AStar():
 		x_m, y_m, theta_rad = \
 			self.state_space.discrete_coor_to_continuous(
 				state.x, state.y, state.theta)
-		for dx, dy, dth in zip(self.dx, self.dy, self.dth):
+		for dx, dy in zip(self.dx, self.dy):
 			new_x = state.x + dx
 			new_y = state.y + dy
 
-			theta = self.state_space.discrete_angle_to_continuous(state.theta)
-			new_theta_rad = self.state_space.normalize_angle_rad(theta + dth)
+			# theta = self.state_space.discrete_angle_to_continuous(state.theta)
+			# new_theta_rad = self.state_space.normalize_angle_rad(theta + dth)
 
-			new_x_m, new_y_m = \
-				self.state_space.discrete_position_to_continous(new_x, new_y)
+			# new_x_m, new_y_m = \
+			# 	self.state_space.discrete_position_to_continous(new_x, new_y)
 			
-			if not self.env.is_valid(new_x_m, new_y_m, new_theta_rad):
+			if not self.env.is_valid(new_x, new_y):
 				continue 
 
-			new_theta = self.state_space.continuous_angle_to_discrete(new_theta_rad)
-			succs.append(self.state_space.get_or_create_state(new_x, new_y, new_theta))
+			# new_theta = self.state_space.continuous_angle_to_discrete(new_theta_rad)
+			succs.append(self.state_space.get_or_create_state(new_x, new_y, 0))
 		return succs
 
 	# Returns whether a solution was found, the number of expansions, and the time taken 
@@ -86,7 +86,11 @@ class AStar():
 				
 				# TO DO: create heuristic class 
 				h = self.state_space.get_distance(succ, self.goal.state)
-				alt_f = alt_g + h
+				
+				# Scale g-value so that h is never greater than g
+				# If h > g we will produce a sub-optimal path because it's as if
+				# we are scaling h by some epsilon
+				alt_f = 100*alt_g + h
 				if not self.visited.has_key(succ.id):
 					self.visited[succ.id] = self.pq.insert(Node(alt_g, alt_f, parent.state.id, succ))
 
@@ -103,12 +107,12 @@ class AStar():
 		state = self.state_space.get_coord_from_state_id(state_id)
 		x_m, y_m, theta_rad = \
 			self.state_space.discrete_coor_to_continuous(state.x, state.y, state.theta)
-		states = [[x_m, y_m, theta_rad]]
+		states = [[state.x, state.y, state.theta]]
 
 		while self.visited[state_id].prev_id != -1:
 			state_id = self.visited[state_id].prev_id
 			state = self.state_space.get_coord_from_state_id(state_id)
 			x_m, y_m, theta_rad = \
 				self.state_space.discrete_coor_to_continuous(state.x, state.y, state.theta)
-			states.append([x_m, y_m, theta_rad])
+			states.append([state.x, state.y, state.theta])
 		return states[::-1]

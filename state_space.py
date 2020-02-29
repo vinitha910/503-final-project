@@ -89,5 +89,4 @@ class StateSpace(object):
     def get_distance(self, state_1, state_2):
         return np.linalg.norm(
             [state_2.x - state_1.x,
-             state_2.y - state_1.y,
-             2*pi/self.num_theta_vals]) 
+             state_2.y - state_1.y]) 
