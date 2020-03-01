@@ -6,25 +6,21 @@ import sys
 import itertools
 
 class Environment:
-    def __init__ (self, length, width):
+    def __init__ (self, length, width, obstacles_params):
         self.length = length
         self.width = width
         self.obstacle_corners = []
         self.obstacles = set()
         self.all_points = set(itertools.product(range(0, width), range(0, length)))
-
-    # checks if x,y is in bounds of environemnt
+        self.create_obstacles(obstacles_params)
+        
+    # Checks if x,y is in bounds of environemnt
     def is_in_bounds(self, x, y):
         if (x >= 0 and y >= 0 and x < self.width and y < self.length):
             return True
         return False
-  
-    # checks if state is valid (i.e. not in collision and is in bounds)
-    def is_valid(self, x, y):
-        if (self.is_in_bounds(x, y) and not self.in_collision(x, y)):
-            return True
-        return False
 
+    # Finds corners of the obstacles to visualize
     def find_corners(self, corners):
         xs = [i[0] for i in corners]
         ys = [i[1] for i in corners]
@@ -53,9 +49,3 @@ class Environment:
                 self.obstacles.add((i, j))
                 points.append((i, j))
         self.find_corners(points)
-
-    def in_collision(self, x, y):
-        if self.distance_map[(x, y)] == 0.0:
-            return True
-
-        return False

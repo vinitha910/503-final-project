@@ -6,8 +6,7 @@ from math import pi
 import time, sys
 
 class AStar():
-	def __init__(self, environment, state_space):
-		self.env = environment
+	def __init__(self, state_space):
 		self.state_space = state_space
 		self.pq = MinBinaryHeap()
 		self.visited = {}
@@ -20,7 +19,7 @@ class AStar():
 	def set_start(self, x_m, y_m, theta_rad):
 		x, y, theta = \
 			self.state_space.continuous_coor_to_discrete(x_m, y_m, theta_rad)
-		if not self.env.is_valid(x, y):
+		if not self.state_space.is_valid(x, y, theta):
 			sys.exit("[Planner] Invalid start state")
 		state = self.state_space.get_or_create_state(x, y, theta)
 		self.start = Node(0, 0, -1, state)
@@ -30,7 +29,7 @@ class AStar():
 	def set_goal(self, x_m, y_m, theta_rad):
 		x, y, theta = \
 			self.state_space.continuous_coor_to_discrete(x_m, y_m, theta_rad)
-		if not self.env.is_valid(x, y):
+		if not self.state_space.is_valid(x, y, theta):
 			sys.exit("[Planner] Invalid goal state")
 		state = self.state_space.get_or_create_state(x, y, theta)
 		self.goal = Node(0, 0, -1, state)
@@ -39,6 +38,7 @@ class AStar():
 		x_m, y_m, theta_rad = \
 			self.state_space.discrete_coor_to_continuous(
 				state.x, state.y, state.theta)
+
 		# TO DO: Check distance to goal is less than eps for
 		# non-point robots
 		return state == self.goal.state
@@ -52,16 +52,13 @@ class AStar():
 			new_x = state.x + dx
 			new_y = state.y + dy
 
-			# new_x_m, new_y_m = \
-			# 	self.state_space.discrete_position_to_continous(new_x, new_y)
-			
-			if not self.env.is_valid(new_x, new_y):
-				continue 
-
 			theta = self.state_space.discrete_angle_to_continuous(state.theta)
 			new_theta_rad = self.state_space.normalize_angle_rad(theta + dth)
 			new_theta = self.state_space.continuous_angle_to_discrete(new_theta_rad)
 			
+			if not self.state_space.is_valid(new_x, new_y, new_theta):
+				continue 
+
 			succs.append(self.state_space.get_or_create_state(new_x, new_y, new_theta))
 		return succs
 

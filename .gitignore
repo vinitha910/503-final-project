@@ -1,1 +1,4 @@
 *.pyc
+__pycache__/*
+robots/*.pyc
+robots/__pycache__/*

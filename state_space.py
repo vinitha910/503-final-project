@@ -2,6 +2,7 @@
 
 from math import floor, pi
 import numpy as np
+from robots.robot import Robot 
 
 class State(object):
     def __init__(self, state_id, x, y, theta):
@@ -18,11 +19,13 @@ class State(object):
 
 
 class StateSpace(object):
-    def __init__(self, resolution, num_theta_vals):
+    def __init__(self, resolution, num_theta_vals, robot, env):
         self.resolution = resolution # in meters
         self.num_theta_vals = num_theta_vals
         self.states = []
         self.state_to_id_map = {}
+        self.robot = robot
+        self.env = env 
 
     def normalize_angle_rad(self, theta_rad):
         normalized_theta_rad = theta_rad
@@ -94,3 +97,21 @@ class StateSpace(object):
 
         return np.linalg.norm(
             [x1 - x2, y1 - y2, th1 - th2]) 
+
+    def in_collision(self, x, y, theta):
+        x_m, y_m, theta_rad = \
+            self.discrete_coor_to_continuous(x, y, theta)
+
+        collision_circles = self.robot.get_collision_circles(x_m, y_m, theta_rad)
+        for x_m, y_m in collision_circles:
+            x, y = self.continous_position_to_discrete(x_m, y_m)
+            if self.env.distance_map[(x, y)] <= self.robot.radius_m:
+                return True
+
+        return False
+
+    # Checks if state is valid (i.e. not in collision and is in bounds)
+    def is_valid(self, x, y, theta):
+        if (self.env.is_in_bounds(x, y) and not self.in_collision(x, y, theta)):
+            return True
+        return False

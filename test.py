@@ -5,29 +5,31 @@ import time
 from math import pi
 from visualize import Visualizer 
 from state_space import StateSpace
+from robots.point_robot import PointRobot 
 
 if __name__ == "__main__":
 	resolution_m = 0.01
 
-	# Parameters: resolution (m), number of theta values 
-	state_space = StateSpace(resolution_m, 8)
+	# Statespace can take a PointRobot, SquareRobot, RectangleRobot objects
+	robot = PointRobot(0, 0)
 
 	# Takes discrete values, divide continuous values by resolution
-	# Input environment length, width 
-	env = Environment(100, 100)
-	
-	# Takes discrete values, divide continuous values by resolution
-	# Input obstacle length, width, x, y
-	o1 = env.create_obstacles([[20, 5, 60, 60]])
+	# Parameters: environment length, width, 2D array with obstacle parameters
+	# e.g. [[l1, w1, x1, x2], [l2, w2, x2, y2],..., [ln, wn, xn, yn]] 
+	env = Environment(100, 100, [[20, 5, 60, 60]])
 
-	planner = AStar(env, state_space)
+	# Parameters: resolution (m), number of theta values, robot object, 
+	# and environment object 
+	state_space = StateSpace(resolution_m, 8, robot, env)
+
+	planner = AStar(state_space)
 
 	# Input x (m), y (m), theta (radians)
 	planner.set_start(0.1, 0.7, 0.0)
 	planner.set_goal(0.7, 0.7, 0.0)
 	
 	# Planner return whether or not it was successful, 
-	# the number of expansions, and time taken 
+	# the number of expansions, and time taken (s)
 	success, num_expansions, planning_time = planner.plan()
 
 	# If planner was successful, extract the path
