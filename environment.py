@@ -1,18 +1,21 @@
 import math
 from math import cos, sin
+from scipy import spatial
 import numpy as np
 import sys 
+import itertools
 
 class Environment:
     def __init__ (self, length, width):
         self.length = length
         self.width = width
         self.obstacle_corners = []
-        self.obstacles = set([])
+        self.obstacles = set()
+        self.all_points = set(itertools.product(range(0, width), range(0, length)))
 
     # checks if x,y is in bounds of environemnt
     def is_in_bounds(self, x, y):
-        if (x >= 0 and y >= 0 and x <= self.width and y <= self.length):
+        if (x >= 0 and y >= 0 and x < self.width and y < self.length):
             return True
         return False
   
@@ -34,6 +37,13 @@ class Environment:
         corners = [(min_x, max_y), (max_x, max_y), (max_x, min_y), (min_x, min_y)]
         self.obstacle_corners.append(corners)
 
+    def create_obstacles(self, obstacles_params):
+        for l, w, x, y in obstacles_params:
+            self.create_obstacle(l, w, x, y)
+
+        distance_matrix = spatial.distance_matrix(list(self.all_points), list(self.obstacles))
+        self.distance_map = dict(zip(self.all_points, np.amin(distance_matrix, axis=1)))
+
     def create_obstacle(self, length, width, x, y):
         points = []
         for i in range(x - width, x + width + 1):
@@ -45,4 +55,7 @@ class Environment:
         self.find_corners(points)
 
     def in_collision(self, x, y):
-        return True if (x, y) in self.obstacles else False
+        if self.distance_map[(x, y)] == 0.0:
+            return True
+
+        return False

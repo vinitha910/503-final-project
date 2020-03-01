@@ -18,7 +18,7 @@ if __name__ == "__main__":
 	
 	# Takes discrete values, divide continuous values by resolution
 	# Input obstacle length, width, x, y
-	o1 = env.create_obstacle(20, 5, 60, 60)
+	o1 = env.create_obstacles([[20, 5, 60, 60]])
 
 	planner = AStar(env, state_space)
 
@@ -28,8 +28,8 @@ if __name__ == "__main__":
 	
 	# Planner return whether or not it was successful, 
 	# the number of expansions, and time taken 
-	success, num_expansions, time = planner.plan()
-	print(time)
+	success, num_expansions, planning_time = planner.plan()
+
 	# If planner was successful, extract the path
 	if success:
 		path = planner.extract_path()
