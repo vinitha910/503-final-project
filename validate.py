@@ -59,7 +59,7 @@ def run_planner(env_parameters, render=None):
                 if planning_time >= TIMEOUT:
                     print("Planning timed out")
                     error = True
-            except:
+            except StandardError:
                 print("Unexpected error:", sys.exc_info()[0])
                 error = True
 
@@ -71,7 +71,7 @@ def run_planner(env_parameters, render=None):
 
         print("Success:", success, "\tExpansions:", num_expansions, "\tTime:", planning_time)
         csv_writer.writerow([
-            params,
+            env_parameters,
             error,
             not not render,
             success,
@@ -92,10 +92,19 @@ if __name__ == "__main__":
     initial_cov = np.eye(len(initial_mean))
     opzer = CMA(run_planner, initial_mean, initial_sigma, initial_cov)
     max_iters = 30
+    min_val = 0
+    convergence_patience = 5
+    remaining_patience = convergence_patience
     for i in range(max_iters):
         print("Iteration", i)
-        run_planner(opzer.mean[:,0], render=True)
+        val = run_planner(opzer.mean[:,0], render=True)
+        if (val < min_val):
+            remaining_patience = convergence_patience
+            min_val = val
+        else:
+            remaining_patience = remaining_patience - 1
         data_file.flush()
         opzer.iter()
     run_planner(opzer.mean[:,0], render=True)
-    print("Your planner is valid! We could find no failing tests! Final test was:", ", ".join(clamp_obs(opzer.mean).astype(str)))
+    print("Your planner is valid! We could find no failing tests!")
+
