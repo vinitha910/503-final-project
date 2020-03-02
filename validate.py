@@ -12,9 +12,11 @@ import sys
 import os.path
 import csv
 
-path = "run-data-"+str(int(time.time()) % 10000000)+".csv"
+run_id = str(int(time.time()) % 10000000)
+path = "run-data-"+run_id+".csv"
 data_file = open(path, "w")
 csv_writer = csv.writer(data_file, delimiter=',')
+img_path = "progress-"+run_id+".png"
 
 def clamp_obs(obs):
     return (obs-(obs-1)*(obs<1)).astype(np.int)
@@ -65,7 +67,7 @@ def run_planner(env_parameters, render=None):
 
         if error or render:
             vis = Visualizer(env, state_space, robot)
-            vis.visualize(path, save=True)
+            vis.visualize(path, filename=img_path)
         else:
             print("    ", end='')
 
@@ -87,7 +89,7 @@ def run_planner(env_parameters, render=None):
 
 if __name__ == "__main__":
     initial_mean = np.array([20, 5, 57, 58, 5, 5, 44, 85])
-    initial_mean = np.array([59,1,59,60,1,24,38,110])
+    #initial_mean = np.array([59,1,59,60,1,24,38,110])
     initial_sigma = 2.0
     initial_cov = np.eye(len(initial_mean))
     opzer = CMA(run_planner, initial_mean, initial_sigma, initial_cov)

@@ -22,7 +22,7 @@ class Visualizer:
         self.obstacles = []
         self.robot = robot
 
-    def visualize(self, path, save=False):
+    def visualize(self, path, filename=None):
         patches = []
         ax = plt.gca()
         for corners in self.env.obstacle_corners:
@@ -55,8 +55,8 @@ class Visualizer:
                 self.connectpoints(path, i, j)
             if (i == len(path)-1):
                 plt.plot(center[0], center[1], color='red', marker='o', alpha=.8)
-        if save:
-            plt.savefig("progress.png")
+        if filename:
+            plt.savefig(filename)
         else:
             plt.show()
         plt.clf()
