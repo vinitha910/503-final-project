@@ -47,4 +47,5 @@ class Environment:
                 if self.is_in_bounds(i, j):
                     self.obstacles.add((i, j))
                     points.append((i, j))
-        self.find_corners(points)
+        if len(points) > 0:
+            self.find_corners(points)

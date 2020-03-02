@@ -5,7 +5,7 @@ from environment import Environment
 from math import pi 
 import time, sys
 
-TIMEOUT = 10.0
+TIMEOUT = 60.0
 
 class AStar():
         def __init__(self, state_space):

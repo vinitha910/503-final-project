@@ -16,8 +16,12 @@ path = "run-data-"+str(int(time.time()) % 10000000)+".csv"
 data_file = open(path, "w")
 csv_writer = csv.writer(data_file, delimiter=',')
 
+def clamp_obs(obs):
+    return (obs-(obs-1)*(obs<1)).astype(np.int)
+
 def run_planner(env_parameters, render=None):
         resolution_m = 0.01
+        params = clamp_obs(env_parameters)
 
         # Statespace can take a PointRobot, SquareRobot, RectangleRobot objects
         # robot = PointRobot(0, 0)
@@ -28,7 +32,7 @@ def run_planner(env_parameters, render=None):
         # Takes discrete values, divide continuous values by resolution
         # Parameters: environment length, width, 2D array with obstacle parameters
         # e.g. [[l1, w1, x1, x2], [l2, w2, x2, y2],..., [ln, wn, xn, yn]]
-        env = Environment(100, 100, [env_parameters[:4].astype(np.int), env_parameters[4:8].astype(np.int)])
+        env = Environment(100, 100, [params[:4], params[4:8]])
 
         # Parameters: resolution (m), number of theta values, robot object,
         # and environment object
@@ -59,7 +63,7 @@ def run_planner(env_parameters, render=None):
                 print("Unexpected error:", sys.exc_info()[0])
                 error = True
 
-        if render:
+        if error or render:
             vis = Visualizer(env, state_space, robot)
             vis.visualize(path, save=True)
         else:
@@ -67,7 +71,7 @@ def run_planner(env_parameters, render=None):
 
         print("Success:", success, "\tExpansions:", num_expansions, "\tTime:", planning_time)
         csv_writer.writerow([
-            env_parameters,
+            params,
             error,
             not not render,
             success,
@@ -76,13 +80,14 @@ def run_planner(env_parameters, render=None):
             ])
 
         if error:
-            print("Your planner is buggy! Check out this failing test:", ",".join(env_parameters.astype(str)))
+            print("Your planner is buggy! Check out this failing test:", ", ".join(params.astype(str)))
             sys.exit(0)
 
         return -num_expansions
 
 if __name__ == "__main__":
     initial_mean = np.array([20, 5, 57, 58, 5, 5, 44, 85])
+    initial_mean = np.array([59,1,59,60,1,24,38,110])
     initial_sigma = 2.0
     initial_cov = np.eye(len(initial_mean))
     opzer = CMA(run_planner, initial_mean, initial_sigma, initial_cov)
@@ -93,4 +98,4 @@ if __name__ == "__main__":
         data_file.flush()
         opzer.iter()
     run_planner(opzer.mean[:,0], render=True)
-    print("Your planner is valid! We could find no failing tests! Final test was:", ",".join(opzer.mean[:,0].astype(str)))
+    print("Your planner is valid! We could find no failing tests! Final test was:", ", ".join(clamp_obs(opzer.mean).astype(str)))
