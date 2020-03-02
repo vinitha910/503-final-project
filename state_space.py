@@ -107,7 +107,6 @@ class StateSpace(object):
             x, y = self.continous_position_to_discrete(x_m, y_m)
             if self.env.distance_map[(x, y)] <= self.robot.radius_m:
                 return True
-
         return False
 
     # Checks if state is valid (i.e. not in collision and is in bounds)

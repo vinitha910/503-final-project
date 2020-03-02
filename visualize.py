@@ -45,10 +45,10 @@ class Visualizer:
                 if hasattr(self.robot, 'length_m'):
                     corner = self.getLowerCorner(x, y, self.robot.length_m, self.robot.width_m)
                     #print('x: ', x, ' y: ', y, ' theta: ', theta)
-                    robotDraw = matplotlib.patches.Rectangle((corner[0],corner[1]), self.robot.width_m, self.robot.length_m, angle=theta, color='pink')
+                    robotDraw = matplotlib.patches.Rectangle((corner[0],corner[1]), self.robot.width_m, self.robot.length_m, angle=theta, color='pink', alpha = .5)
                 else:
                     center = [path[i][0], path[i][1]]
-                    robotDraw = plt.Circle((center[0], center[1]), self.robot.radius_m, color='pink')
+                    robotDraw = plt.Circle((center[0], center[1]), self.robot.radius_m, color='pink', alpha=.5)
                 ax.add_artist(robotDraw)
                 if (i == 0):
                     plt.plot(path[i][0], path[i][1], color='green', marker='o')
