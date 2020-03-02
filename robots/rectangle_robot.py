@@ -1,4 +1,7 @@
 from robots.robot import Robot 
+from matplotlib.patches import Rectangle
+import matplotlib
+import matplotlib.pyplot as plt
 
 class RectangleRobot(Robot):
 	def __init__(self, length_m, width_m):
@@ -16,4 +19,7 @@ class RectangleRobot(Robot):
 	def get_collision_circles(self, x_m, y_m, theta_rad):
 		# TODO
 		return [(x_m, y_m)]
+
+	def draw(self, corner, center, theta):
+		return matplotlib.patches.Rectangle((corner[0],corner[1]), self.width_m, self.length_m, angle=theta, color='pink')
 

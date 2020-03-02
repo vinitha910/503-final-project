@@ -2,6 +2,7 @@ from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle
 from matplotlib.patches import Polygon
 import matplotlib
+import matplotlib.transforms as transforms
 import matplotlib.pyplot as plt
 import random
 import math
@@ -15,13 +16,13 @@ import numpy as np
 #   path must be valid three dimensional array [x,y,theta]
 ##
 class Visualizer:
-    def __init__(self, env, state_space):
+    def __init__(self, env, state_space, robot):
         self.env = env
         self.state_space = state_space
         self.obstacles = []
+        self.robot = robot
 
     def visualize(self, path):
-        #Plot obstacles as Polygon patches: https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.patches.Polygon.html
         patches = []
         ax = plt.gca()
         for corners in self.env.obstacle_corners:
@@ -33,8 +34,6 @@ class Visualizer:
         ax.set_xlim([0, self.env.width])
         ax.set_ylim([0, self.env.length])
 
-        robot_h_m = 2.0
-        robot_w_m = 1.0
         #Robot path visualization:
         for i in range(len(path)):
             x = path[i][0]
@@ -42,10 +41,11 @@ class Visualizer:
             theta = path[i][2]
             if ((len(path) > 1 )& (i < len(path)-1)):
                 j = i+1
-                #robot = plt.Circle((path[i][0], path[i][1]), robot_w_m, color='pink')
-                corner = self.getLowerCorner(x, y, robot_h_m, robot_w_m)
-                robot = matplotlib.patches.Rectangle((corner[0],corner[1]), robot_w_m, robot_h_m, theta, color='pink')
-                ax.add_artist(robot)
+                corner = self.getLowerCorner(x, y, self.robot.length_m, self.robot.width_m)
+                center = [path[i][0], path[i][1]]
+                #print(theta)
+                robotDraw = self.robot.draw(corner, center, theta)
+                ax.add_artist(robotDraw)
                 if (i == 0):
                     plt.plot(path[i][0], path[i][1], color='green', marker='o')
                 self.connectpoints(path, i, j)
@@ -54,8 +54,9 @@ class Visualizer:
         plt.show()
 
     def getLowerCorner(self, x, y, robot_h_m, robot_w_m):
+        #rotated_y = self.y_m - (x - self.x_m)*sin(self.theta_rad) + (y - self.y_m)*cos(self.theta_rad)
+        #rotated_x = self.x_m + (x - self.x_m)*cos(self.theta_rad) + (y - self.y_m)*sin(self.theta_rad)
         corner = [x - robot_w_m/2, y - robot_h_m/2]
-        #Need to account for the theta, then will be done
         return corner
 
     def connectpoints(self, path,i,j):
@@ -63,7 +64,6 @@ class Visualizer:
         nextState = path[j]
         x1, x2 = state[0], nextState[0]
         y1, y2 = state[1], nextState[1]
-        #theta = state[2] #will need to be updated
         plt.plot([x1,x2],[y1,y2],'k-')
 
 

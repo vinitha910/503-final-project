@@ -6,12 +6,18 @@ from math import pi
 from visualize import Visualizer 
 from state_space import StateSpace
 from robots.point_robot import PointRobot 
+from robots.square_robot import SquareRobot 
+from robots.rectangle_robot import RectangleRobot 
+from robots.circle_robot import CircleRobot
 
 if __name__ == "__main__":
 	resolution_m = 0.01
 
 	# Statespace can take a PointRobot, SquareRobot, RectangleRobot objects
-	robot = PointRobot(0, 0)
+	#robot = PointRobot(0, 0)
+	#robot = CircleRobot(3,3)
+	#robot = SquareRobot(3,3)
+	robot = RectangleRobot(3,1)
 
 	# Takes discrete values, divide continuous values by resolution
 	# Parameters: environment length, width, 2D array with obstacle parameters
@@ -36,6 +42,6 @@ if __name__ == "__main__":
 	if success:
 		path = planner.extract_path()
 		# Remove this when running optimization
-		vis = Visualizer(env, state_space)
+		vis = Visualizer(env, state_space, robot)
 		vis.visualize(path)
 
