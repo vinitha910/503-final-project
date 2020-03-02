@@ -44,8 +44,8 @@ class Environment:
         points = []
         for i in range(x - width, x + width + 1):
             for j in range(y - length, y + length + 1):
-                if not self.is_in_bounds(i, j):
-                    sys.exit('[Environment] Obstacle is out of bounds')
-                self.obstacles.add((i, j))
-                points.append((i, j))
-        self.find_corners(points)
+                if self.is_in_bounds(i, j):
+                    self.obstacles.add((i, j))
+                    points.append((i, j))
+        if len(points) > 0:
+            self.find_corners(points)

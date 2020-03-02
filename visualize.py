@@ -22,7 +22,7 @@ class Visualizer:
         self.obstacles = []
         self.robot = robot
 
-    def visualize(self, path):
+    def visualize(self, path, filename=None):
         patches = []
         ax = plt.gca()
         for corners in self.env.obstacle_corners:
@@ -55,7 +55,11 @@ class Visualizer:
                 self.connectpoints(path, i, j)
             if (i == len(path)-1):
                 plt.plot(center[0], center[1], color='red', marker='o', alpha=.8)
-        plt.show()
+        if filename:
+            plt.savefig(filename)
+        else:
+            plt.show()
+        plt.clf()
 
     def getLowerCorner(self, x, y, robot_h_m, robot_w_m):
         #rotated_y = self.y_m - (x - self.x_m)*sin(self.theta_rad) + (y - self.y_m)*cos(self.theta_rad)
