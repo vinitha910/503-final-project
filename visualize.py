@@ -43,7 +43,7 @@ class Visualizer:
                 j = i+1
                 corner = self.getLowerCorner(x, y, self.robot.length_m, self.robot.width_m)
                 center = [path[i][0], path[i][1]]
-                #print(theta)
+                # print(theta)
                 robotDraw = self.robot.draw(corner, center, theta)
                 ax.add_artist(robotDraw)
                 if (i == 0):

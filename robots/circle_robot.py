@@ -3,7 +3,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 import sys 
 
-
 class CircleRobot(Robot):
 	def __init__(self, length_m, width_m):
 		self.length_m = length_m

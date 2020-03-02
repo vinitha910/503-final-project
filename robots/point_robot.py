@@ -27,6 +27,5 @@ class PointRobot(Robot):
 		return [(x_m, y_m)]
 
 	def draw(self, corner, center, theta):
-		print(self.radius_m)
 		return plt.Circle((center[0], center[1]), self.radius_m, color='pink')
 
