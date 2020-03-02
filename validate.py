@@ -105,6 +105,8 @@ if __name__ == "__main__":
             min_val = val
         else:
             remaining_patience = remaining_patience - 1
+            if remaining_patience == 0:
+                break
         data_file.flush()
         opzer.iter()
     run_planner(opzer.mean[:,0], render=True)
