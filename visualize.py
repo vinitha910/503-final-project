@@ -39,18 +39,22 @@ class Visualizer:
             x = path[i][0]
             y = path[i][1]
             theta = path[i][2]
+            center = [path[i][0], path[i][1]]
             if ((len(path) > 1 )& (i < len(path)-1)):
                 j = i+1
-                corner = self.getLowerCorner(x, y, self.robot.length_m, self.robot.width_m)
-                center = [path[i][0], path[i][1]]
-                # print(theta)
-                robotDraw = self.robot.draw(corner, center, theta)
+                if hasattr(self.robot, 'length_m'):
+                    corner = self.getLowerCorner(x, y, self.robot.length_m, self.robot.width_m)
+                    #print('x: ', x, ' y: ', y, ' theta: ', theta)
+                    robotDraw = matplotlib.patches.Rectangle((corner[0],corner[1]), self.robot.width_m, self.robot.length_m, angle=theta, color='pink')
+                else:
+                    center = [path[i][0], path[i][1]]
+                    robotDraw = plt.Circle((center[0], center[1]), self.robot.radius_m, color='pink')
                 ax.add_artist(robotDraw)
                 if (i == 0):
                     plt.plot(path[i][0], path[i][1], color='green', marker='o')
                 self.connectpoints(path, i, j)
             if (i == len(path)-1):
-                plt.plot(path[i][0], path[i][1], color='red', marker='o')
+                plt.plot(center[0], center[1], color='red', marker='o', alpha=.8)
         plt.show()
 
     def getLowerCorner(self, x, y, robot_h_m, robot_w_m):

@@ -5,19 +5,17 @@ import time
 from math import pi
 from visualize import Visualizer 
 from state_space import StateSpace
-from robots.point_robot import PointRobot 
-from robots.square_robot import SquareRobot 
 from robots.rectangle_robot import RectangleRobot 
 from robots.circle_robot import CircleRobot
 
 if __name__ == "__main__":
 	resolution_m = 0.01
 
-	# Statespace can take a PointRobot, SquareRobot, RectangleRobot objects
-	# robot = PointRobot(0, 0)
-	# robot = CircleRobot(3,3)
-	robot = SquareRobot(4,4)
-	# robot = RectangleRobot(3,1)
+	# Statespace can take CircleRobot or RectangleRobot objects
+	#robot = CircleRobot(0) #Point
+	#robot = CircleRobot(3) #Circle
+	#robot = RectangleRobot(3,3) #Square 
+	robot = RectangleRobot(4,2) #Rectangle
 
 	# Takes discrete values, divide continuous values by resolution
 	# Parameters: environment length, width, 2D array with obstacle parameters
