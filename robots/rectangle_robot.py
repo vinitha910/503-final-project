@@ -19,16 +19,12 @@ class RectangleRobot(Robot):
 	# Return: [(x1, y1), (x2, y2),..., (xn, yn)]
 	def get_collision_circles(self, x_m, y_m, theta_rad):
 		#If a square, return the center point
+		centers = [(x_m, y_m)]
 		if self.length_m == self.width_m:
-			return [[(x_m), (y_m)]]
+			return centers
 
 		#if a rectangle, return centers of all tiny squares in the rectangle
-		centers = []
-		for i in range(self.width_m):
-			if (self.width_m > 1) & (i < self.width_m -1):
-				x1, x2 = i, i+1
-				for j in range(self.length_m):
-					if (self.length_m > 1) & (j < self.length_m -1):
-						y1, y2 = j, j+1
-						centers += [[(x1+((x2-x1)/2)), (y1+((y2-y1)/2))]]
+		for x in range(self.width_m-1):
+			for y in range(self.length_m-1):
+				centers += [(x+(((x+1)-x)/2), y+(((y+1)-y)/2))] #could be simplified to x + .5, y + .5
 		return centers
