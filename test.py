@@ -19,8 +19,8 @@ if __name__ == "__main__":
 
 	# Takes discrete values, divide continuous values by resolution
 	# Parameters: environment length, width, 2D array with obstacle parameters
-	# e.g. [[l1, w1, x1, x2], [l2, w2, x2, y2],..., [ln, wn, xn, yn]] 
-	env = Environment(100, 100, [[20, 5, 57, 58], [5, 5, 44, 85]])
+	# e.g. [[l1, w1, x1, y1], [l2, w2, x2, y2],..., [ln, wn, xn, yn]] 
+	env = Environment(100, 100, [[50, 3, 85, 40], [3, 45, 50, 90]])
 
 	# Parameters: resolution (m), number of theta values, robot object, 
 	# and environment object 
@@ -29,8 +29,8 @@ if __name__ == "__main__":
 	planner = AStar(state_space)
 
 	# Input x (m), y (m)
-	planner.set_start(0.4, 0.7, pi/4)
-	planner.set_goal(0.7, 0.8, pi/4)
+	planner.set_start(0.4, 0.1, pi/4)
+	planner.set_goal(0.95, 0.1, pi/4)
 	
 	# Planner return whether or not it was successful, 
 	# the number of expansions, and time taken (s)
