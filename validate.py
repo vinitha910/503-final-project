@@ -61,7 +61,7 @@ def run_planner(env_parameters, render=None):
                 if planning_time >= TIMEOUT:
                     print("Planning timed out")
                     error = True
-            except StandardError:
+            except Exception:
                 print("Unexpected error:", sys.exc_info()[0])
                 error = True
 
@@ -93,13 +93,15 @@ if __name__ == "__main__":
     initial_sigma = 2.0
     initial_cov = np.eye(len(initial_mean))
     opzer = CMA(run_planner, initial_mean, initial_sigma, initial_cov)
-    max_iters = 30
+    max_iters = 50
     min_val = 0
     convergence_patience = 5
     remaining_patience = convergence_patience
-    for i in range(max_iters):
-        print("Iteration", i)
+    i = 0
+    while True:
+        print("Iteration", i, "Patience", remaining_patience)
         val = run_planner(opzer.mean[:,0], render=True)
+        data_file.flush()
         if (val < min_val):
             remaining_patience = convergence_patience
             min_val = val
@@ -107,8 +109,9 @@ if __name__ == "__main__":
             remaining_patience = remaining_patience - 1
             if remaining_patience == 0:
                 break
-        data_file.flush()
+        if i > max_iters:
+            break
+        i += 1
         opzer.iter()
-    run_planner(opzer.mean[:,0], render=True)
     print("Your planner is valid! We could find no failing tests!")
 
