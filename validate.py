@@ -73,7 +73,7 @@ def run_planner(env_parameters, render=None):
                     print("Planning timed out")
                     error = True
             except Exception:
-                print("Unexpected error:", sys.exc_info()[0])
+                print("Unexpected error:", sys.exc_info())
                 error = True
 
         if error or render:
