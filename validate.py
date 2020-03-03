@@ -37,8 +37,8 @@ def run_planner(env_parameters, render=None):
 
         # Statespace can take a PointRobot, SquareRobot, RectangleRobot objects
         # robot = PointRobot(0, 0)
-        # robot = CircleRobot(3,3)
-        robot = RectangleRobot(4,4)
+        robot = CircleRobot(3)
+        # robot = RectangleRobot(4,4)
         # robot = RectangleRobot(3,1)
 
         # Takes discrete values, divide continuous values by resolution
