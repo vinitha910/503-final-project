@@ -116,6 +116,13 @@ class AStar():
             self.state_space.discrete_angle_to_continuous(state.theta)
         states = [[state.x, state.y, theta_rad]]
 
+        if not state_id in self.visited:
+            # just draw a line from start to finish
+            state_id = self.start.state_id
+            state = self.state_space.get_coord_from_state_id(state_id)
+            states.append([state.x, state.y, theta_rad])
+            return states[::-1]
+
         while self.visited[state_id].prev_id != -1:
             state_id = self.visited[state_id].prev_id
             state = self.state_space.get_coord_from_state_id(state_id)
