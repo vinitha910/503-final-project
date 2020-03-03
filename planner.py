@@ -4,6 +4,7 @@ from min_binary_heap import MinBinaryHeap
 from environment import Environment 
 from math import pi 
 import time, sys
+import numpy as np 
 
 TIMEOUT = 60.0
 
@@ -30,6 +31,7 @@ class AStar():
 
     # TO DO: Create goal region for non-point robots
     def set_goal(self, x_m, y_m, theta_rad):
+        self.goal_cont = np.array([x_m, y_m, theta_rad])
         x, y, theta = \
             self.state_space.continuous_coor_to_discrete(x_m, y_m, theta_rad)
         if not self.state_space.is_valid(x, y, theta):
@@ -40,9 +42,10 @@ class AStar():
         return True
             
     def is_goal(self, state):
-        return state.x == self.goal_state.x and state.y == self.goal_state.y
-        # TO DO: Check distance to goal is less than eps for
-        # non-point robots
+        x_m, y_m, theta_rad = self.state_space.discrete_coor_to_continuous(state.x, state.y, state.theta)
+        if np.linalg.norm([x_m, y_m, theta_rad] - self.goal_cont) < 0.1:
+            return True
+        return False
 
     def get_succs(self, state):
         succs = []
