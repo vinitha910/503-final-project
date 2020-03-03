@@ -113,13 +113,13 @@ class AStar():
         state_id = self.goal.state_id 
         state = self.state_space.get_coord_from_state_id(state_id)
         theta_rad = \
-                        self.state_space.discrete_angle_to_continuous(state.theta)
+            self.state_space.discrete_angle_to_continuous(state.theta)
         states = [[state.x, state.y, theta_rad]]
 
         while self.visited[state_id].prev_id != -1:
             state_id = self.visited[state_id].prev_id
             state = self.state_space.get_coord_from_state_id(state_id)
             theta_rad = \
-                    self.state_space.discrete_angle_to_continuous(state.theta)
+                self.state_space.discrete_angle_to_continuous(state.theta)
             states.append([state.x, state.y, theta_rad])
         return states[::-1]
