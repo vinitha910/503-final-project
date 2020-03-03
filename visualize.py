@@ -36,19 +36,17 @@ class Visualizer:
 
         #Robot path visualization:
         for i in range(len(path)):
-            x = path[i][0]
-            y = path[i][1]
             theta = path[i][2]
             center = [path[i][0], path[i][1]]
             if ((len(path) > 1 )& (i < len(path)-1)):
                 j = i+1
                 if hasattr(self.robot, 'length_m'):
-                    corner = self.getLowerCorner(x, y, self.robot.length_m, self.robot.width_m)
+                    corner = self.getLowerCorner(center[0], center[1], self.robot.length_m, self.robot.width_m, theta)
                     #print('x: ', x, ' y: ', y, ' theta: ', theta)
-                    robotDraw = matplotlib.patches.Rectangle((corner[0],corner[1]), self.robot.width_m, self.robot.length_m, angle=theta, color='pink', alpha = .5)
+                    robotDraw = matplotlib.patches.Rectangle((corner[0],corner[1]), self.robot.width_m, self.robot.length_m, angle=math.degrees(theta), color='pink', alpha = .5)
                 else:
                     center = [path[i][0], path[i][1]]
-                    robotDraw = plt.Circle((center[0], center[1]), self.robot.radius_m, color='pink', alpha=.5)
+                    robotDraw = plt.Circle((center[0], center[1]), self.robot.radius_m, fill=False, color='pink', alpha=.9)
                 ax.add_artist(robotDraw)
                 if (i == 0):
                     plt.plot(path[i][0], path[i][1], color='green', marker='o')
@@ -61,11 +59,20 @@ class Visualizer:
             plt.show()
         plt.clf()
 
-    def getLowerCorner(self, x, y, robot_h_m, robot_w_m):
-        #rotated_y = self.y_m - (x - self.x_m)*sin(self.theta_rad) + (y - self.y_m)*cos(self.theta_rad)
-        #rotated_x = self.x_m + (x - self.x_m)*cos(self.theta_rad) + (y - self.y_m)*sin(self.theta_rad)
-        corner = [x - robot_w_m/2, y - robot_h_m/2]
-        return corner
+    def getLowerCorner(self, center_x, center_y, robot_h_m, robot_w_m, theta_rad):
+        #rotated_x = center_x + (corner_x - center_x)*cos(theta) + (corner_y - center_y)*sin(theta)
+        #rotated_y = center_y - (corner_x - center_x)*sin(self.theta_rad) + (corner_y - center_y)*cos(self.theta_rad)
+        # hyp = math.sqrt(math.pow(abs(center_x)-(robot_w_m/2),2) + math.pow(abs(center_x)-(robot_h_m/2),2))
+        corner = [center_x-robot_w_m/2, center_y-robot_h_m]
+        # rotated_x = corner[0]
+        # rotated_y = corner[1]
+
+        #rotated_x = center_x - (corner[0] - center_x)*cos(theta_rad) + (corner[1] - center_y)*sin(theta_rad)
+        rotated_x = center_x + (robot_w_m)*cos(theta_rad) + (corner[1] - center_y)*sin(theta_rad)
+        #rotated_y = center_y - (corner[0] - center_x)*sin(theta_rad) + (corner[1] - center_y)*cos(theta_rad)
+        rotated_y = center_y  + (corner[1] - center_y)*cos(theta_rad)
+        rotated_corner = [rotated_x , rotated_y]
+        return rotated_corner
 
     def connectpoints(self, path,i,j):
         state = path[i]

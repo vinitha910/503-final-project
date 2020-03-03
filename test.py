@@ -15,7 +15,7 @@ if __name__ == "__main__":
 	#robot = CircleRobot(0) #Point
 	#robot = CircleRobot(3) #Circle
 	#robot = RectangleRobot(3,3) #Square 
-	robot = RectangleRobot(1,3) #Rectangle
+	robot = RectangleRobot(3,2) #Rectangle
 
 	# Takes discrete values, divide continuous values by resolution
 	# Parameters: environment length, width, 2D array with obstacle parameters
