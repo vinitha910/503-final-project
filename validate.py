@@ -88,7 +88,7 @@ def run_planner(env_parameters, render=None):
 
         if error:
             print("Your planner is buggy! Check out this failing test:", ", ".join(obs_params.astype(str)),
-                ", ".join(env_parameters[M:]))
+                ", ".join(env_parameters[M:].astype(str)))
             sys.exit(0)
 
         return -num_expansions

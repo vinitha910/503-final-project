@@ -3,6 +3,7 @@
 from math import floor, pi
 import numpy as np
 from robots.robot import Robot 
+from bug_config import *
 
 class State(object):
     def __init__(self, state_id, x, y, theta):
@@ -95,8 +96,12 @@ class StateSpace(object):
         x2, y2, th2 = self.discrete_coor_to_continuous(
             state_2.x, state_2.y, state_2.theta)
 
-        return np.linalg.norm(
-            [x1 - x2, y1 - y2, th1 - th2]) 
+        if BUG_NO[0] == BUGNO_OVERFLOW:
+            return np.int32(2**18.1*1000*np.linalg.norm(
+                [x1 - x2, y1 - y2, th1 - th2]))
+        else:
+            return np.linalg.norm(
+                [x1 - x2, y1 - y2, th1 - th2])
 
     def in_collision(self, x, y, theta):
         x_m, y_m, theta_rad = \
