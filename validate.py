@@ -11,6 +11,12 @@ from cma import CMA
 import sys
 import os.path
 import csv
+from bug_config import *
+
+import warnings
+warnings.simplefilter("error")
+
+BUG_NO[0] = BUGNO_OVERFLOW
 
 run_id = str(int(time.time()) % 10000000)
 path = "run-data-"+run_id+".csv"
