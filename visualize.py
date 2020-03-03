@@ -62,15 +62,24 @@ class Visualizer:
     def getLowerCorner(self, center_x, center_y, robot_h_m, robot_w_m, theta_rad):
         #rotated_x = center_x + (corner_x - center_x)*cos(theta) + (corner_y - center_y)*sin(theta)
         #rotated_y = center_y - (corner_x - center_x)*sin(self.theta_rad) + (corner_y - center_y)*cos(self.theta_rad)
-        # hyp = math.sqrt(math.pow(abs(center_x)-(robot_w_m/2),2) + math.pow(abs(center_x)-(robot_h_m/2),2))
-        corner = [center_x-robot_w_m/2, center_y-robot_h_m]
-        # rotated_x = corner[0]
-        # rotated_y = corner[1]
+        
+        if robot_h_m == robot_w_m:
+            corner = [center_x-robot_w_m/2, center_y-robot_h_m]
+            rotated_x = center_x + (robot_w_m)*cos(theta_rad) + (corner[1] - center_y)*sin(theta_rad)
+            rotated_y = center_y  + (corner[1] - center_y)*cos(theta_rad)
 
-        #rotated_x = center_x - (corner[0] - center_x)*cos(theta_rad) + (corner[1] - center_y)*sin(theta_rad)
-        rotated_x = center_x + (robot_w_m)*cos(theta_rad) + (corner[1] - center_y)*sin(theta_rad)
-        #rotated_y = center_y - (corner[0] - center_x)*sin(theta_rad) + (corner[1] - center_y)*cos(theta_rad)
-        rotated_y = center_y  + (corner[1] - center_y)*cos(theta_rad)
+        elif robot_h_m > robot_w_m:
+            corner = [center_x-robot_w_m/2, center_y-robot_h_m/2]
+            #rotated_x = center_x + (corner[0] - center_x)*cos(theta_rad) - (corner[1] - center_y)*sin(theta_rad)
+            rotated_x = center_x + (robot_w_m/2)*cos(theta_rad) + (robot_h_m/2)*sin(theta_rad)
+            rotated_y = center_y + (-robot_w_m/2)*sin(theta_rad)+ (-robot_h_m/2)*cos(theta_rad)
+            #rotated_y = center_y  + (corner[1] - center_y)*cos(theta_rad)
+        
+        else: 
+            corner = [center_x-robot_w_m/2, center_y-robot_h_m/2]
+            rotated_x = center_x + (corner[0] - center_x)*cos(theta_rad) - (corner[1] - center_y)*sin(theta_rad)
+            rotated_y = center_y - (corner[0] - center_x)*sin(theta_rad) - (corner[1] - center_y)*cos(theta_rad)
+        
         rotated_corner = [rotated_x , rotated_y]
         return rotated_corner
 
