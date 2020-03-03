@@ -14,8 +14,8 @@ if __name__ == "__main__":
 	# Statespace can take CircleRobot or RectangleRobot objects
 	#robot = CircleRobot(0) #Point
 	#robot = CircleRobot(3) #Circle
-	#robot = RectangleRobot(3,3) #Square 
-	robot = RectangleRobot(4,2) #Rectangle
+	# robot = RectangleRobot(0.04,0.04) #Square 
+	robot = RectangleRobot(0.04, 0.02) #Rectangle
 
 	# Takes discrete values, divide continuous values by resolution
 	# Parameters: environment length, width, 2D array with obstacle parameters
@@ -29,7 +29,7 @@ if __name__ == "__main__":
 	planner = AStar(state_space)
 
 	# Input x (m), y (m)
-	planner.set_start(0.4, 0.7, pi/4)
+	planner.set_start(0.4, 0.4, pi/4)
 	planner.set_goal(0.7, 0.8, pi/4)
 	
 	# Planner return whether or not it was successful, 

@@ -105,12 +105,23 @@ class StateSpace(object):
         collision_circles = self.robot.get_collision_circles(x_m, y_m, theta_rad)
         for x_m, y_m in collision_circles:
             x, y = self.continous_position_to_discrete(x_m, y_m)
+            if not self.env.is_in_bounds(x, y):
+                return True
             if self.env.distance_map[(x, y)] <= self.robot.radius_m:
                 return True
         return False
 
     # Checks if state is valid (i.e. not in collision and is in bounds)
     def is_valid(self, x, y, theta):
-        if (self.env.is_in_bounds(x, y) and not self.in_collision(x, y, theta)):
-            return True
-        return False
+        if (self.in_collision(x, y, theta)):
+            return False
+
+        x_m, y_m, theta_rad = \
+            self.discrete_coor_to_continuous(x, y, theta)
+        perimeter_points = self.robot.get_perimeter_points(x_m, y_m, theta_rad)
+        for point in perimeter_points:
+            x, y = self.continous_position_to_discrete(point[0], point[1])
+            if not self.env.is_in_bounds(x, y):
+                return False
+
+        return True

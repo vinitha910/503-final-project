@@ -1,36 +1,62 @@
 from robots.robot import Robot 
 import math
 from math import cos, sin
+import numpy as np
 
 class RectangleRobot(Robot):
-	def __init__(self, length_m, width_m):
-		self.length_m = length_m
-		self.width_m = width_m
-		self.radius_m = self.get_radius(self.length_m, self.width_m)
+    def __init__(self, length_m, width_m):
+        self.length_m = length_m
+        self.width_m = width_m
+        self.radius_m = self.get_radius(self.length_m, self.width_m)
 
-	# Find the radius (m) for the collison circles
-	def get_radius(self, length_m, width_m):
-		#If a square, return radius of circle that envlops square
-		if self.length_m == self.width_m:
-			return math.sqrt(math.pow(length_m, 2)+math.pow(width_m, 2))/2
-		#If a rectangle, radius is hypotenuse of a triangle with two sides that = 1
-		#print('radius: ', (math.sqrt(2)/2))
-		return (math.sqrt(2)/2)
+    # Find the radius (m) for the collison circles
+    def get_radius(self, length_m, width_m):
+        return (math.sqrt(self.width_m**2)/2)
 
-	# Given the continuous state find the centers of the collision circles
-	# Return: [(x1, y1), (x2, y2),..., (xn, yn)]
-	def get_collision_circles(self, x_m, y_m, theta_rad):
-		#If a square, return the center point
-		centers = [(x_m, y_m)]
-		if self.length_m == self.width_m:
-			return centers
+    # Given the continuous state find the centers of the collision circles
+    # Return: [(x1, y1), (x2, y2),..., (xn, yn)]
+    def get_collision_circles(self, x_m, y_m, theta_rad):
+        #If a square, return the center point
+        if self.length_m == self.width_m:
+            return [(x_m, y_m)]
 
-		#if a rectangle, return centers of all tiny squares in the rectangle
-		for x in range(self.width_m-1):
-			for y in range(self.length_m-1):
-				X = x*cos(theta_rad) - y*sin(theta_rad)
-				X2 = (x+1)*cos(theta_rad) - (y+1)*sin(theta_rad)
-				Y = x*sin(theta_rad) + y*cos(theta_rad)
-				Y2 = (x+1)*sin(theta_rad) + (y+1)*cos(theta_rad)
-				centers += [(X+((X2-X)/2), Y+((Y2-Y)/2))] #could be simplified to x + .5, y + .5
-		return centers
+        if self.length_m / self.width_m != 2:
+            sys.error('RectangleRobot length should be twice the width')
+    
+        center = np.array([x_m, y_m])
+        rotated_midpoint = self.rotate_point(np.array([x_m, y_m + self.length_m/2.0]), center, theta_rad)
+        collision_sphere_1 = (rotated_midpoint + center)/2.0
+
+        rotated_midpoint = self.rotate_point(np.array([x_m, y_m - self.length_m/2.0]), center, theta_rad)
+        collision_sphere_2 = (rotated_midpoint + center)/2.0
+
+        centers = [tuple(collision_sphere_1), tuple(collision_sphere_2)]
+        
+        assert(len(centers) == self.length_m/self.width_m)
+        return centers
+
+    def get_perimeter_points(self, x_m, y_m, theta_rad):
+        perimeter_points = []
+        centers = self.get_collision_circles(x_m, y_m, theta_rad)
+        deltas = [-self.width_m/2.0, self.width_m/2.0]
+        for center in centers:
+            for dx in deltas:
+                for dy in deltas:
+                    corner = np.array(center) + np.array([dx, dy])
+                    rotated_corner = self.rotate_point(corner, np.array(center), theta_rad)
+                    perimeter_points.append(rotated_corner)
+
+        if len(perimeter_points) == 4:
+            return perimeter_points
+
+        xs = [i[0] for i in perimeter_points]
+        ys = [i[1] for i in perimeter_points]
+        min_x = min(xs)
+        min_y = min(ys)
+        max_x = max(xs)
+        max_y = max(ys)
+
+        # top left, top right, bottom right, bottom left
+        perimeter_points = [(min_x, max_y), (max_x, max_y), (max_x, min_y), (min_x, min_y)]
+
+        return perimeter_points
