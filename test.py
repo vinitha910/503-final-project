@@ -13,14 +13,14 @@ if __name__ == "__main__":
 
 	# Statespace can take CircleRobot or RectangleRobot objects
 	#robot = CircleRobot(0) #Point
-	#robot = CircleRobot(3) #Circle
+	robot = CircleRobot(2) #Circle
 	#robot = RectangleRobot(3,3) #Square 
-	robot = RectangleRobot(1,3) #Rectangle
+	# robot = RectangleRobot(1,3) #Rectangle
 
 	# Takes discrete values, divide continuous values by resolution
 	# Parameters: environment length, width, 2D array with obstacle parameters
 	# e.g. [[l1, w1, x1, x2], [l2, w2, x2, y2],..., [ln, wn, xn, yn]] 
-	env = Environment(100, 100, [[20, 5, 57, 58], [5, 5, 44, 85]])
+	env = Environment(100, 100, [[45, 5, 55, 45], [5, 5, 40, 91]])
 
 	# Parameters: resolution (m), number of theta values, robot object, 
 	# and environment object 
