@@ -7,12 +7,11 @@ from visualize import Visualizer
 from state_space import StateSpace
 from robots.rectangle_robot import RectangleRobot
 from robots.circle_robot import CircleRobot
-from cma import CMA
 import sys
 import os.path
 import csv
 from bug_config import *
-from validate import cma_validate
+from validate import cma_validate, random_validate
 
 import warnings
 warnings.simplefilter("error")
@@ -56,7 +55,6 @@ def run_planner(env_parameters, render=None):
 
         # Input x (m), y (m)
         if not (planner.set_start(env_parameters[-4]/100., env_parameters[-3]/100., pi/4)):
-            print(env_parameters[-4], ' ' , env_parameters[-5])
             success = False # no expansions, since initial config was invalid
         if not (planner.set_goal(env_parameters[-2]/100., env_parameters[-1]/100., pi/4)):
             success = False # ditto
@@ -95,10 +93,12 @@ def run_planner(env_parameters, render=None):
         return error, success, num_expansions, planning_time
 
 if __name__ == "__main__":
-    BUG_NO[0] = BUGNO_OVERFLOW
+    BUG_NO[0] = BUGNO_NONTERMINATING
+    #BUG_NO[0] = BUGNO_OVERFLOW
     start_time = time.time()
-    valid, failing_test = cma_validate(run_planner)
-    total_time = start_time - time.time()
+    valid, failing_test = random_validate(run_planner)
+    #valid, failing_test = cma_validate(run_planner)
+    total_time = time.time() - start_time
     if valid:
         print("\nYour planner is valid! We could find no failing tests!")
     else:

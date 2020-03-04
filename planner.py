@@ -101,8 +101,12 @@ class AStar():
 
                 # If the successor has not been visited OR the node is in the 
                 # open list AND alt_g < the previously calculated g
-                if not succ.id in self.visited or (self.visited[succ.id].in_pq 
-                   and alt_g < self.visited[succ.id].g):
+                if BUG_NO[0] == BUGNO_NONTERMINATING:
+                    do_the_thing = True
+                else:
+                    do_the_thing = not succ.id in self.visited or (self.visited[succ.id].in_pq and alt_g < self.visited[succ.id].g)
+
+                if do_the_thing:
                     succ_node = Node(alt_g, parent.state_id, succ.id, True)
                     self.pq.insert(succ_node, alt_f)
                     self.visited[succ.id] = succ_node
