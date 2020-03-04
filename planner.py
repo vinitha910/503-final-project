@@ -95,7 +95,7 @@ class AStar():
                 # If h > g we will produce a sub-optimal path because it's as if
                 # we are scaling h by some epsilon
                 if BUG_NO[0] == BUGNO_OVERFLOW:
-                    alt_f = np.int32(1000*alt_g + h)
+                    alt_f = np.int32(alt_g + h)
                 else:
                     alt_f = 1000*alt_g + h
 
