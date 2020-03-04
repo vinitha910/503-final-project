@@ -93,11 +93,13 @@ def run_planner(env_parameters, render=None):
         return error, success, num_expansions, planning_time
 
 if __name__ == "__main__":
-    BUG_NO[0] = BUGNO_NONTERMINATING
-    #BUG_NO[0] = BUGNO_OVERFLOW
+    BUG_NO[0] = int(sys.argv[1])
+    if sys.argv[2] == "random":
+        validator = random_validate
+    else:
+        validator = cma_validate
     start_time = time.time()
-    valid, failing_test = random_validate(run_planner)
-    #valid, failing_test = cma_validate(run_planner)
+    valid, failing_test = validator(run_planner)
     total_time = time.time() - start_time
     if valid:
         print("\nYour planner is valid! We could find no failing tests!")
