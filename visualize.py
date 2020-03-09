@@ -53,16 +53,10 @@ class Visualizer:
                     corner = self.getLowerCorner(center_x, center_y, length, width, theta)
                     robotDraw = matplotlib.patches.Rectangle((corner[0],corner[1]), width, length, 
                         angle=math.degrees(theta), fill=False, edgecolor='pink')
-                    #TODO: comment out before push
-                    #x_m, y_m, theta_rad = \
-                    #    self.discrete_coor_to_continuous(center_x, center_y, theta)
-                    #collision_circles = self.robot.get_collision_circles(center_x, center_y, theta)
-                    #END COMMENT
                 else:
                     #Draw a circle (or point, circle with radius = 0.0)
                     robotDraw = plt.Circle((center_x, center_y), radius, fill=False, edgecolor='pink')
                 ax.add_artist(robotDraw)
-                #ax.add_artist(collision_circles) #TODO: remove
 
                 #If at the very beginning, add green dot
                 if (i == 0):
