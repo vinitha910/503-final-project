@@ -24,7 +24,8 @@ class Visualizer:
 
     def visualize(self, path, filename=None):
         patches = []
-        ax = plt.gca()
+        fig= plt.figure(figsize=(8,8))
+        ax = fig.gca()
         for corners in self.env.obstacle_corners:
             points=[]
             for i in range(len(corners)):
