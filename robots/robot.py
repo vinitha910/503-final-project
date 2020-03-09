@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from math import cos, sin 
 import numpy as np 
 
+
 class Robot(ABC):
     def __init__(self, length_m, width_m):
         self.length_m = length_m

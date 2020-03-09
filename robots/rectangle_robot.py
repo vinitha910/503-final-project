@@ -7,20 +7,21 @@ class RectangleRobot(Robot):
     def __init__(self, length_m, width_m):
         self.length_m = length_m
         self.width_m = width_m
-        self.radius_m = self.get_radius(self.length_m, self.width_m)
+        self.radius_m = self.get_radius()
 
     # Find the radius (m) for the collison circles
-    def get_radius(self, length_m, width_m):
-        return (math.sqrt(self.width_m**2)/2)
+    def get_radius(self):
+        return (math.sqrt(((self.width_m/2)**2)*2) + 0.3*self.width_m)
 
     # Given the continuous state find the centers of the collision circles
     # Return: [(x1, y1), (x2, y2),..., (xn, yn)]
     def get_collision_circles(self, x_m, y_m, theta_rad):
         #If a square, return the center point
         if self.length_m == self.width_m:
+            print('square')
             return [(x_m, y_m)]
 
-        if self.length_m / self.width_m != 2:
+        if (self.length_m / self.width_m != 2):
             sys.error('RectangleRobot length should be twice the width')
     
         center = np.array([x_m, y_m])

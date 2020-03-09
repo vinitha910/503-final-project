@@ -24,7 +24,7 @@ class Visualizer:
 
     def visualize(self, path, filename=None):
         patches = []
-        fig= plt.figure(figsize=(8,8))
+        fig = plt.figure(figsize=(8,8))
         ax = fig.gca()
         for corners in self.env.obstacle_corners:
             points=[]
@@ -35,29 +35,45 @@ class Visualizer:
         ax.set_xlim([0, self.env.width])
         ax.set_ylim([0, self.env.length])
 
+        #Discretize length, width, and radius
         length = floor(self.robot.length_m/self.state_space.resolution)
         width = floor(self.robot.width_m/self.state_space.resolution)
         radius = floor(self.robot.radius_m/self.state_space.resolution)
 
         #Robot path visualization:
+        #For every step i, which has an x,y,theta coordinate, plot robot
         for i in range(len(path)):
+            center_x = path[i][0]
+            center_y = path[i][1]
             theta = path[i][2]
-            center = [path[i][0], path[i][1]]
-            if ((len(path) > 1 )& (i < len(path)-1)):
-                j = i+1
+            #If there is more than one point (path length > 0), draw path
+            if len(path) > 1:
+                #If this is a square/rectangluar robot, draw rectangle
                 if hasattr(self.robot, 'length_m'):
-                    corner = self.getLowerCorner(center[0], center[1], length, width, theta)
-                    #print('x: ', x, ' y: ', y, ' theta: ', theta)
-                    robotDraw = matplotlib.patches.Rectangle((corner[0],corner[1]), width, length, angle=math.degrees(theta), color='pink', alpha = .5)
+                    corner = self.getLowerCorner(center_x, center_y, length, width, theta)
+                    robotDraw = matplotlib.patches.Rectangle((corner[0],corner[1]), width, length, 
+                        angle=math.degrees(theta), fill=False, edgecolor='pink')
+                    #TODO: comment out before push
+                    #x_m, y_m, theta_rad = \
+                    #    self.discrete_coor_to_continuous(center_x, center_y, theta)
+                    #collision_circles = self.robot.get_collision_circles(center_x, center_y, theta)
+                    #END COMMENT
                 else:
-                    center = [path[i][0], path[i][1]]
-                    robotDraw = plt.Circle((center[0], center[1]), radius, fill=False, color='pink', alpha=.9)
+                    #Draw a circle (or point, circle with radius = 0.0)
+                    robotDraw = plt.Circle((center_x, center_y), radius, fill=False, edgecolor='pink')
                 ax.add_artist(robotDraw)
+                #ax.add_artist(collision_circles) #TODO: remove
+
+                #If at the very beginning, add green dot
                 if (i == 0):
-                    plt.plot(path[i][0], path[i][1], color='green', marker='o')
-                self.connectpoints(path, i, j)
-            if (i == len(path)-1):
-                plt.plot(center[0], center[1], color='red', marker='o', alpha=.8)
+                    plt.plot(center_x, center_y, color='green', marker='o', alpha=.8)
+                #If not on the very last one, draw the lines
+                if i < len(path)-1:
+                    j = i+1
+                    self.connectpoints(path, i, j)
+            #If on last one, plot a red point
+            if i == len(path)-1:
+                plt.plot(center_x, center_y, color='red', marker='o', alpha=.8)
         if filename:
             plt.savefig(filename)
         else:
@@ -65,26 +81,11 @@ class Visualizer:
         plt.clf()
 
     def getLowerCorner(self, center_x, center_y, robot_h_m, robot_w_m, theta_rad):
-        #corner = [center_x-robot_w_m/2, center_y-robot_h_m/2]
-
+        
         center = np.array([center_x, center_y])
         corner =  center + np.array([-robot_w_m/2, -robot_h_m/2])
         rotated_corner = self.robot.rotate_point(corner, center, theta_rad)
-
-
-        # if robot_h_m == robot_w_m:
-        #     rotated_x = center_x + (robot_w_m)*cos(theta_rad) - (robot_h_m)*sin(theta_rad)
-        #     rotated_y = center_y - (robot_h_m)*sin(theta_rad)
-
-        # elif robot_h_m > robot_w_m:
-        #     rotated_x = center_x - (robot_w_m)*cos(theta_rad) + (robot_h_m)*sin(theta_rad)
-        #     rotated_y = center_y + (robot_w_m)*sin(theta_rad) - (robot_h_m)*cos(theta_rad)
-
-        # else: 
-        #     rotated_x = center_x - (robot_w_m)*cos(theta_rad) + (robot_h_m)*sin(theta_rad)
-        #     rotated_y = center_y - (robot_w_m)*sin(theta_rad) + (robot_h_m)*cos(theta_rad)
         
-        # rotated_corner = [rotated_x , rotated_y]
         return rotated_corner
 
     def connectpoints(self, path,i,j):
