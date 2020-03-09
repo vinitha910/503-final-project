@@ -4,6 +4,7 @@ from node import Node
 from heapq import heappush, heappop, heapify  
 import itertools 
 import sys 
+from bug_config import *
 
 class MinBinaryHeap:
     def __init__(self):
@@ -16,7 +17,7 @@ class MinBinaryHeap:
         return True if len(self.entry_finder) == 0 else False
 
     def insert(self, task, priority=0):
-        if (priority < 0):
+        if BUG_NO[0] != BUGNO_OVERFLOW and (priority < 0):
             sys.exit('Invalid priority < 0')
         'Add a new task or update the priority of an existing task'
         if task in self.entry_finder:

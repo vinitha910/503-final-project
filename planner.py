@@ -4,6 +4,8 @@ from min_binary_heap import MinBinaryHeap
 from environment import Environment 
 from math import pi 
 import time, sys
+import numpy as np
+from bug_config import *
 
 TIMEOUT = 60.0
 
@@ -25,7 +27,7 @@ class AStar():
             print("[Planner] Invalid start state")
             return False
         state = self.state_space.get_or_create_state(x, y, theta)
-        self.start = Node(0, -1, state.id)
+        self.start = Node(np.int32(0), -1, state.id)
         return True
 
     # TO DO: Create goal region for non-point robots
@@ -36,7 +38,7 @@ class AStar():
             print("[Planner] Invalid goal state")
             return False
         self.goal_state = self.state_space.get_or_create_state(x, y, theta)
-        self.goal = Node(0, -1, self.goal_state.id)
+        self.goal = Node(np.int32(0), -1, self.goal_state.id)
         return True
             
     def is_goal(self, state):
@@ -92,12 +94,19 @@ class AStar():
                 # Scale g-value so that h is never greater than g
                 # If h > g we will produce a sub-optimal path because it's as if
                 # we are scaling h by some epsilon
-                alt_f = 1000*alt_g + h
+                if BUG_NO[0] == BUGNO_OVERFLOW:
+                    alt_f = np.int32(alt_g + h)
+                else:
+                    alt_f = 1000*alt_g + h
 
                 # If the successor has not been visited OR the node is in the 
                 # open list AND alt_g < the previously calculated g
-                if not succ.id in self.visited or (self.visited[succ.id].in_pq 
-                   and alt_g < self.visited[succ.id].g):
+                if BUG_NO[0] == BUGNO_NONTERMINATING:
+                    do_the_thing = True
+                else:
+                    do_the_thing = not succ.id in self.visited or (self.visited[succ.id].in_pq and alt_g < self.visited[succ.id].g)
+
+                if do_the_thing:
                     succ_node = Node(alt_g, parent.state_id, succ.id, True)
                     self.pq.insert(succ_node, alt_f)
                     self.visited[succ.id] = succ_node
@@ -115,6 +124,13 @@ class AStar():
         theta_rad = \
             self.state_space.discrete_angle_to_continuous(state.theta)
         states = [[state.x, state.y, theta_rad]]
+
+        if not state_id in self.visited:
+            # just draw a line from start to finish
+            state_id = self.start.state_id
+            state = self.state_space.get_coord_from_state_id(state_id)
+            states.append([state.x, state.y, theta_rad])
+            return states[::-1]
 
         while self.visited[state_id].prev_id != -1:
             state_id = self.visited[state_id].prev_id

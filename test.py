@@ -13,9 +13,10 @@ if __name__ == "__main__":
 
 	# Statespace can take CircleRobot or RectangleRobot objects
 	#robot = CircleRobot(0) #Point
-	#robot = CircleRobot(3) #Circle
+	#robot = CircleRobot(0.03) #Circle
 	# robot = RectangleRobot(0.04,0.04) #Square 
 	robot = RectangleRobot(0.04, 0.02) #Rectangle
+
 
 	# Takes discrete values, divide continuous values by resolution
 	# Parameters: environment length, width, 2D array with obstacle parameters
@@ -36,9 +37,8 @@ if __name__ == "__main__":
 	# the number of expansions, and time taken (s)
 	success, num_expansions, planning_time = planner.plan()
 
-	# If planner was successful, extract the path
-	if success:
-		path = planner.extract_path()
-		# Remove this when running optimization
-		vis = Visualizer(env, state_space, robot)
-		vis.visualize(path)
+	# Even if planner was unsuccessful, extract the path
+	path = planner.extract_path()
+	# Remove this when running optimization
+	vis = Visualizer(env, state_space, robot)
+	vis.visualize(path)
