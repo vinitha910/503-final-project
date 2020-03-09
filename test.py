@@ -12,7 +12,7 @@ if __name__ == "__main__":
 	resolution_m = 0.01
 
 	# Statespace can take CircleRobot or RectangleRobot objects
-	# robot = RectangleRobot(0.04, 0.02) #Rectangle
+	robot = RectangleRobot(0.04, 0.02) #Rectangle
 
 	# Takes discrete values, divide continuous values by resolution
 	# Parameters: environment length, width, 2D array with obstacle parameters
