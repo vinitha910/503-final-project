@@ -22,7 +22,7 @@ def cma_validate(planner_fn):
 
     for i in range(max_chains):
         initial_mean = np.array([20, 5, 57, 58, 5, 5, 44, 85, 40, 70, 70, 80])
-        #initial_mean = random_params() # TODO random restarts
+        initial_mean = random_params() # TODO random restarts
         initial_sigma = 2.0
         initial_cov = np.eye(len(initial_mean))
         opzer = CMA(f, initial_mean, initial_sigma, initial_cov)

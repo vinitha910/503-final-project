@@ -79,6 +79,7 @@ class Visualizer:
         else:
             plt.show()
         plt.clf()
+        plt.close()
 
     def getLowerCorner(self, center_x, center_y, robot_h_m, robot_w_m, theta_rad):
         
