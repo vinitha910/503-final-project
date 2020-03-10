@@ -24,7 +24,7 @@ class AStar():
         x, y, theta = \
             self.state_space.continuous_coor_to_discrete(x_m, y_m, theta_rad)
         if not self.state_space.is_valid(x, y, theta):
-            print("[Planner] Invalid start state")
+            print("    [Planner] Invalid start state")
             return False
         state = self.state_space.get_or_create_state(x, y, theta)
         self.start = Node(np.int32(0), -1, state.id)
@@ -36,7 +36,7 @@ class AStar():
             self.state_space.continuous_coor_to_discrete(x_m, y_m, theta_rad)
         if BUG_NO[0] != BUG_INVALID_GOAL:
             if not self.state_space.is_valid(x, y, theta):
-                print("[Planner] Invalid goal state")
+                print("    [Planner] Invalid goal state")
                 return False
         self.goal_state = self.state_space.get_or_create_state(x, y, theta)
         self.goal = Node(np.int32(0), -1, self.goal_state.id)
