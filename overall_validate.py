@@ -111,10 +111,10 @@ def run_seed(validator_name, prefix):
     global_vars[HUMAN_RENDER] = False
 
     run_id = prefix + "-" + str(int(time.time()) % 10000000)
-    path = "run-data-"+run_id+".csv"
+    path = "temp-data-"+run_id+".csv"
     save_vars[DATA_FILE] = open(path, "w")
     save_vars[CSV_WRITER] = csv.writer(save_vars[DATA_FILE], delimiter=',')
-    save_vars[IMG_PATH] = "progress-"+run_id+".png"
+    save_vars[IMG_PATH] = "temp-data-"+run_id+".png"
 
     if validator_name == "random":
         validator = random_validate
