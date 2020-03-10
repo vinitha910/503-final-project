@@ -38,7 +38,8 @@ if __name__ == "__main__":
 	success, num_expansions, planning_time = planner.plan()
 
 	# Even if planner was unsuccessful, extract the path
-	path = planner.extract_path()
+	path_ids, path = planner.extract_path()
+
 	# Remove this when running optimization
 	vis = Visualizer(env, state_space, robot)
 	vis.visualize(path)

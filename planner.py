@@ -31,6 +31,7 @@ class AStar():
         return True
 
     def set_goal(self, x_m, y_m, theta_rad):
+        self.goal_cont = np.array([x_m, y_m, theta_rad])
         x, y, theta = \
             self.state_space.continuous_coor_to_discrete(x_m, y_m, theta_rad)
         if BUG_NO[0] != BUG_INVALID_GOAL:
@@ -94,20 +95,22 @@ class AStar():
             for succ in succs:        
                 alt_g = parent.g + self.state_space.get_distance(parent_state, succ)
                 
-                # TO DO: create heuristic class 
-                h = self.state_space.get_distance(succ, self.goal_state)
+                if BUG_NO[0] == BUG_INCONSISTENT_HEURISTIC:
+                    h = self.state_space.manhattan_distance(succ, self.goal_state)
+                else:
+                    h = self.state_space.get_distance(succ, self.goal_state)
                 
                 # Scale g-value so that h is never greater than g
                 # If h > g we will produce a sub-optimal path because it's as if
                 # we are scaling h by some epsilon
-                if BUG_NO[0] == BUGNO_OVERFLOW:
+                if BUG_NO[0] == BUG_OVERFLOW:
                     alt_f = np.int32(alt_g + h)
                 else:
                     alt_f = 1000*alt_g + h
 
                 # If the successor has not been visited OR the node is in the 
                 # open list AND alt_g < the previously calculated g
-                if BUG_NO[0] == BUGNO_NONTERMINATING:
+                if BUG_NO[0] == BUG_NONTERMINATING:
                     do_the_thing = True
                 else:
                     do_the_thing = not succ.id in self.visited or (self.visited[succ.id].in_pq and alt_g < self.visited[succ.id].g)
@@ -130,6 +133,7 @@ class AStar():
         theta_rad = \
             self.state_space.discrete_angle_to_continuous(state.theta)
         states = [[state.x, state.y, theta_rad]]
+        state_ids = [state_id]
 
         if not state_id in self.visited:
             # just draw a line from start to finish
@@ -137,7 +141,7 @@ class AStar():
             # state = self.state_space.get_coord_from_state_id(state_id)
             # states.append([state.x, state.y, theta_rad])
             # return states[::-1]
-            return []
+            return [], []
             
         while self.visited[state_id].prev_id != -1:
             state_id = self.visited[state_id].prev_id
@@ -145,4 +149,21 @@ class AStar():
             theta_rad = \
                 self.state_space.discrete_angle_to_continuous(state.theta)
             states.append([state.x, state.y, theta_rad])
-        return states[::-1]
+            state_ids.append(state_id)
+
+        return state_ids[::-1], states[::-1]
+
+    def check_consistency(self, path_ids):
+        for i in range(len(path_ids) - 1):
+            n = self.state_space.get_coord_from_state_id(i)
+            h_n = self.state_space.manhattan_distance(n, self.goal_state)
+
+            nprime = self.state_space.get_coord_from_state_id(i + 1)
+            h_nprime = self.state_space.manhattan_distance(nprime, self.goal_state)
+
+            g = self.state_space.get_distance(n, nprime)
+
+            if h_n > g + h_nprime:
+                return False
+
+        return True

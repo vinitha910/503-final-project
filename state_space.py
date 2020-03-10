@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from math import floor, pi
+from math import floor, pi, fabs
 import numpy as np
 from robots.robot import Robot 
 from bug_config import *
@@ -99,9 +99,17 @@ class StateSpace(object):
         if BUG_NO[0] == BUGNO_OVERFLOW:
             return np.int32(2**18.1*1000*np.linalg.norm(
                 [x1 - x2, y1 - y2, th1 - th2]))
-        else:
-            return np.linalg.norm(
-                [x1 - x2, y1 - y2, th1 - th2])
+        
+        return np.linalg.norm(
+            [x1 - x2, y1 - y2, th1 - th2])
+
+    def manhattan_distance(self, state_1, state_2):
+        x1, y1, th1 = self.discrete_coor_to_continuous(
+            state_1.x, state_1.y, state_1.theta)
+        x2, y2, th2 = self.discrete_coor_to_continuous(
+            state_2.x, state_2.y, state_2.theta)
+
+        return fabs(x1 - x2) + fabs(y1 - y2)
 
     def in_collision(self, x, y, theta):
         x_m, y_m, theta_rad = \
