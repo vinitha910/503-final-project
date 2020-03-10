@@ -47,7 +47,7 @@ def run_planner(env_parameters, render=None):
         # Takes discrete values, divide continuous values by resolution
         # Parameters: environment length, width, 2D array with obstacle parameters
         # e.g. [[l1, w1, x1, y1], [l2, w2, x2, y2],..., [ln, wn, xn, yn]]
-        env = Environment(100, 100, [obs_params[:4], obs_params[4:8]])
+        env = Environment(30, 30, [obs_params[:4], obs_params[4:8]])
 
         # Parameters: resolution (m), number of theta values, robot object,
         # and environment object
@@ -62,7 +62,7 @@ def run_planner(env_parameters, render=None):
         if len(env_parameters) > 8:
             sx, sy, gx, gy = env_parameters[8:12]
         else:
-            sx, sy, gx, gy = [0.2, 0.2, 0.8, 0.8]
+            sx, sy, gx, gy = [0.05, 0.05, 0.25, 0.25]
 
         if not (planner.set_start(sx, sy, pi/4)):
             success = False # no expansions, since initial config was invalid

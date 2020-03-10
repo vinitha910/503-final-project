@@ -9,33 +9,34 @@ from robots.rectangle_robot import RectangleRobot
 from robots.circle_robot import CircleRobot
 
 if __name__ == "__main__":
-	resolution_m = 0.01
+    resolution_m = 0.01
 
-	# Statespace can take CircleRobot or RectangleRobot objects
-	robot = RectangleRobot(0.04, 0.02) #Rectangle
+    # Statespace can take CircleRobot or RectangleRobot objects
+    robot = RectangleRobot(0.04, 0.02) #Rectangle
 
-	# Takes discrete values, divide continuous values by resolution
-	# Parameters: environment length, width, 2D array with obstacle parameters
-	# e.g. [[l1, w1, x1, x2], [l2, w2, x2, y2],..., [ln, wn, xn, yn]] 
-	env = Environment(100, 100, [[20, 5, 57, 58], [5, 5, 44, 85]])
+    # Takes discrete values, divide continuous values by resolution
+    # Parameters: environment length, width, 2D array with obstacle parameters
+    # e.g. [[l1, w1, x1, x2], [l2, w2, x2, y2],..., [ln, wn, xn, yn]] 
+    env = Environment(30, 30, [[6, 2, 19, 17], [2, 2, 14, 26]])
 
-	# Parameters: resolution (m), number of theta values, robot object, 
-	# and environment object 
-	state_space = StateSpace(resolution_m, 8, robot, env)
+    # Parameters: resolution (m), number of theta values, robot object, 
+    # and environment object 
+    state_space = StateSpace(resolution_m, 8, robot, env)
 
-	planner = AStar(state_space)
+    planner = AStar(state_space)
 
-	# Input x (m), y (m)
-	planner.set_start(0.4, 0.4, pi/4)
-	planner.set_goal(0.7, 0.8, pi/4)
-	
-	# Planner return whether or not it was successful, 
-	# the number of expansions, and time taken (s)
-	success, num_expansions, planning_time = planner.plan()
+    path = []
+    pts = [0.1, 0.1, 0.2, 0.25]
+    # Input x (m), y (m)
+    if planner.set_start(pts[0], pts[1], pi/4) and planner.set_goal(pts[2], pts[3], pi/4):
 
-	# Even if planner was unsuccessful, extract the path
-	path_ids, path = planner.extract_path()
+        # Planner return whether or not it was successful,
+        # the number of expansions, and time taken (s)
+        success, num_expansions, planning_time = planner.plan()
 
-	# Remove this when running optimization
-	vis = Visualizer(env, state_space, robot)
-	vis.visualize(path)
+        if success:
+            _, path = planner.extract_path()
+
+    # Remove this when running optimization
+    vis = Visualizer(env, state_space, robot)
+    vis.visualize(path, start_end=pts)

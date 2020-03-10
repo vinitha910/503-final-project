@@ -4,7 +4,7 @@ from cma import CMA
 OPT_DIM = 8
 
 def random_params():
-    return np.random.uniform(low=0.0, high=1.0, size=OPT_DIM) * [20, 20, 100, 100, 20, 20, 100, 100]
+    return (np.random.uniform(low=0., high=1., size=OPT_DIM) * [4, 4, 10, 10, 4, 4, 10, 10]) * 3
 
 def cma_validate(planner_fn):
     found_error = False
@@ -21,7 +21,6 @@ def cma_validate(planner_fn):
     max_chains = 1 # TODO random restarts
 
     for i in range(max_chains):
-        initial_mean = np.array([20, 5, 57, 58, 5, 5, 44, 85, 40, 70, 70, 80])
         initial_mean = random_params() # TODO random restarts
         initial_sigma = 2.0
         initial_cov = np.eye(len(initial_mean))
