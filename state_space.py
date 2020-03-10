@@ -96,7 +96,7 @@ class StateSpace(object):
         x2, y2, th2 = self.discrete_coor_to_continuous(
             state_2.x, state_2.y, state_2.theta)
 
-        if BUG_NO[0] == BUGNO_OVERFLOW:
+        if BUG_NO[0] == BUG_OVERFLOW:
             return np.int32(2**18.1*1000*np.linalg.norm(
                 [x1 - x2, y1 - y2, th1 - th2]))
         

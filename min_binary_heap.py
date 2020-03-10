@@ -17,7 +17,7 @@ class MinBinaryHeap:
         return True if len(self.entry_finder) == 0 else False
 
     def insert(self, task, priority=0):
-        if BUG_NO[0] != BUGNO_OVERFLOW and (priority < 0):
+        if BUG_NO[0] != BUG_OVERFLOW and (priority < 0):
             sys.exit('Invalid priority < 0')
         'Add a new task or update the priority of an existing task'
         if task in self.entry_finder:

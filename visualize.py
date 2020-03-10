@@ -22,7 +22,7 @@ class Visualizer:
         self.obstacles = []
         self.robot = robot
 
-    def visualize(self, path, filename=None):
+    def visualize(self, path, filename=None, start_end=None):
         patches = []
         fig = plt.figure(figsize=(8,8))
         ax = fig.gca()
@@ -30,7 +30,7 @@ class Visualizer:
             points=[]
             for i in range(len(corners)):
                 points += [[corners[i][0], corners[i][1]]]
-            p = matplotlib.patches.Polygon(points, closed=True, fill=True)
+            p = matplotlib.patches.Polygon(points, closed=True, fill=True, alpha=0.2)
             ax.add_patch(p)
         ax.set_xlim([0, self.env.width])
         ax.set_ylim([0, self.env.length])
@@ -67,7 +67,13 @@ class Visualizer:
                     self.connectpoints(path, i, j)
             #If on last one, plot a red point
             if i == len(path)-1:
-                plt.plot(center_x, center_y, color='red', marker='o', alpha=.8)
+                plt.plot(center_x, center_y, color='blue', marker='o', alpha=.8)
+
+        if start_end is not None:
+            sx, sy, gx, gy = (np.array(start_end)*100).astype(int)
+            plt.plot(sx, sy, color='green', marker='o', alpha=0.8)
+            plt.plot(gx, gy, color='blue', marker='o', alpha=0.8)
+
         if filename:
             plt.savefig(filename)
         else:

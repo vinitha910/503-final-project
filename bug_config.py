@@ -1,7 +1,6 @@
 
-# 0 for no bug, > 0 for one of the bugs, see paper
-BUG_NO = [0]
-BUGNO_NONE = 0
+# Correct implementation (no bugs)
+BUG_NONE = 0
 
 # The planner will expand every node in the environment and then return
 # unsuccesful 
@@ -25,3 +24,6 @@ BUG_OVERFLOW = 5
 
 # The planner does not terminate since states are duplicated
 BUG_NONTERMINATING = 6
+
+
+BUG_NO = [BUG_NONE]

@@ -2,3 +2,6 @@
 __pycache__/*
 robots/*.pyc
 robots/__pycache__/*
+*.csv
+env_config.txt
+*.png
