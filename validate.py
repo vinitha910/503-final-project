@@ -18,10 +18,10 @@ def cma_validate(planner_fn):
             failing_test = env_parameters
         return -num_expansions
 
-    max_chains = 1 # TODO random restarts
+    max_chains = 3
 
     for i in range(max_chains):
-        initial_mean = random_params() # TODO random restarts
+        initial_mean = random_params()
         initial_sigma = 2.0
         initial_cov = np.eye(len(initial_mean))
         opzer = CMA(f, initial_mean, initial_sigma, initial_cov)
