@@ -29,82 +29,87 @@ IMG_PATH = 1
 CSV_WRITER = 2
 
 def clamp_obs(obs):
-    return (obs-(obs-1)*(obs<1)).astype(np.int)
+    o = obs.copy()
+    o[o < 1] = 1
+    o[o > 29] = 29
+    return o.astype(np.int)
 
 def run_planner(env_parameters, render=None):
-        global_vars[N_RUNS] += 1
+    global_vars[N_RUNS] += 1
 
-        resolution_m = 0.01
-        obs_params = clamp_obs(env_parameters[:M])
+    resolution_m = 0.01
+    obs_params = clamp_obs(env_parameters[:M])
+    with open("temp-data-params.txt", "w") as f:
+        f.write(",".join(obs_params.astype(str)))
 
-        # Statespace can take a PointRobot, SquareRobot, RectangleRobot objects
-        # robot = PointRobot(0, 0)
-        # robot = CircleRobot(3)
-        # robot = RectangleRobot(4,4)
-        # robot = RectangleRobot(3,1)
-        robot = RectangleRobot(0.04, 0.02)
+    # Statespace can take a PointRobot, SquareRobot, RectangleRobot objects
+    # robot = PointRobot(0, 0)
+    # robot = CircleRobot(3)
+    # robot = RectangleRobot(4,4)
+    # robot = RectangleRobot(3,1)
+    robot = RectangleRobot(0.04, 0.02)
 
-        # Takes discrete values, divide continuous values by resolution
-        # Parameters: environment length, width, 2D array with obstacle parameters
-        # e.g. [[l1, w1, x1, y1], [l2, w2, x2, y2],..., [ln, wn, xn, yn]]
-        env = Environment(30, 30, [obs_params[:4], obs_params[4:8]])
+    # Takes discrete values, divide continuous values by resolution
+    # Parameters: environment length, width, 2D array with obstacle parameters
+    # e.g. [[l1, w1, x1, y1], [l2, w2, x2, y2],..., [ln, wn, xn, yn]]
+    env = Environment(30, 30, [obs_params[:4], obs_params[4:8]])
 
-        # Parameters: resolution (m), number of theta values, robot object,
-        # and environment object
-        state_space = StateSpace(resolution_m, 8, robot, env)
+    # Parameters: resolution (m), number of theta values, robot object,
+    # and environment object
+    state_space = StateSpace(resolution_m, 8, robot, env)
 
-        planner = AStar(state_space)
-        error = False
-        path = ([],[])
-        success, num_expansions, planning_time = True, 0, 0.0
+    planner = AStar(state_space)
+    error = False
+    path = ([],[])
+    success, num_expansions, planning_time = True, 0, 0.0
 
-        # Input x (m), y (m)
-        if len(env_parameters) > 8:
-            sx, sy, gx, gy = env_parameters[8:12]
-        else:
-            sx, sy, gx, gy = [0.05, 0.05, 0.25, 0.25]
+    # Input x (m), y (m)
+    if len(env_parameters) > 8:
+        sx, sy, gx, gy = env_parameters[8:12]
+    else:
+        sx, sy, gx, gy = [0.05, 0.05, 0.25, 0.25]
 
-        if not (planner.set_start(sx, sy, pi/4)):
-            success = False # no expansions, since initial config was invalid
-        if not (planner.set_goal(gx, gy, pi/4)):
-            success = False # ditto
+    if not (planner.set_start(sx, sy, pi/4)):
+        success = False # no expansions, since initial config was invalid
+    if not (planner.set_goal(gx, gy, pi/4)):
+        success = False # ditto
 
-        # Planner return whether or not it was successful,
-        # the number of expansions, and time taken (s)
-        if success:
-            try:
-                success, num_expansions, planning_time = planner.plan()
-                if success:
-                    path = planner.extract_path()
-                if planning_time >= TIMEOUT:
-                    print("Planning timed out")
-                    error = True
-            except Exception:
-                print("Unexpected error:", sys.exc_info())
+    # Planner return whether or not it was successful,
+    # the number of expansions, and time taken (s)
+    if success:
+        try:
+            success, num_expansions, planning_time = planner.plan()
+            if success:
+                path = planner.extract_path()
+            if planning_time >= TIMEOUT:
+                print("Planning timed out")
                 error = True
+        except Exception:
+            print("Unexpected error:", sys.exc_info())
+            error = True
 
-        if error or render:
-            if render == True:
-                filename = save_vars[IMG_PATH]
-            else:
-                filename = render
-            vis = Visualizer(env, state_space, robot)
-            vis.visualize(path[1], filename=filename, start_end=[sx, sy, gx, gy])
+    if error or render:
+        if render == True:
+            filename = save_vars[IMG_PATH]
         else:
-            print("    ", end='')
+            filename = render
+        vis = Visualizer(env, state_space, robot)
+        vis.visualize(path[1], filename=filename, start_end=[sx, sy, gx, gy])
+    else:
+        print("    ", end='')
 
-        print("Success:", success, "\tExpansions:", num_expansions, "\tTime:", planning_time)
-        save_vars[CSV_WRITER].writerow([
-            env_parameters,
-            error,
-            not not render,
-            success,
-            num_expansions,
-            planning_time,
-            ])
-        save_vars[DATA_FILE].flush()
+    print("Success:", success, "\tExpansions:", num_expansions, "\tTime:", planning_time)
+    save_vars[CSV_WRITER].writerow([
+        env_parameters,
+        error,
+        not not render,
+        success,
+        num_expansions,
+        planning_time,
+        ])
+    save_vars[DATA_FILE].flush()
 
-        return error, success, num_expansions, planning_time
+    return error, success, num_expansions, planning_time
 
 def run_seed(validator_name, prefix):
     global_vars[N_RUNS] = 0
