@@ -30,21 +30,19 @@ class AStar():
         self.start = Node(np.int32(0), -1, state.id)
         return True
 
-    # TO DO: Create goal region for non-point robots
     def set_goal(self, x_m, y_m, theta_rad):
         x, y, theta = \
             self.state_space.continuous_coor_to_discrete(x_m, y_m, theta_rad)
-        if not self.state_space.is_valid(x, y, theta):
-            print("[Planner] Invalid goal state")
-            return False
+        if BUG_NO[0] != BUG_INVALID_GOAL:
+            if not self.state_space.is_valid(x, y, theta):
+                print("[Planner] Invalid goal state")
+                return False
         self.goal_state = self.state_space.get_or_create_state(x, y, theta)
         self.goal = Node(np.int32(0), -1, self.goal_state.id)
         return True
             
     def is_goal(self, state):
         return state.x == self.goal_state.x and state.y == self.goal_state.y
-        # TO DO: Check distance to goal is less than eps for
-        # non-point robots
 
     def get_succs(self, state):
         succs = []
@@ -80,9 +78,11 @@ class AStar():
             num_expansions += 1
 
             parent_state = self.state_space.get_coord_from_state_id(parent.state_id)
-            if self.is_goal(parent_state):
-                self.goal = parent
-                return True, num_expansions, time.time() - start
+            
+            if BUG_NO[0] != BUG_INCORRECT_GOAL:
+                if self.is_goal(parent_state):
+                    self.goal = parent
+                    return True, num_expansions, time.time() - start
 
             succs = self.get_succs(parent_state)
             for succ in succs:        
@@ -127,11 +127,12 @@ class AStar():
 
         if not state_id in self.visited:
             # just draw a line from start to finish
-            state_id = self.start.state_id
-            state = self.state_space.get_coord_from_state_id(state_id)
-            states.append([state.x, state.y, theta_rad])
-            return states[::-1]
-
+            # state_id = self.start.state_id
+            # state = self.state_space.get_coord_from_state_id(state_id)
+            # states.append([state.x, state.y, theta_rad])
+            # return states[::-1]
+            return []
+            
         while self.visited[state_id].prev_id != -1:
             state_id = self.visited[state_id].prev_id
             state = self.state_space.get_coord_from_state_id(state_id)
