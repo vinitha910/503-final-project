@@ -12,8 +12,13 @@ class Environment:
         self.obstacle_corners = []
         self.obstacles = set()
         self.all_points = set(itertools.product(range(0, width), range(0, length)))
-        self.create_obstacles(obstacles_params)
         
+        if obstacles_params != []:
+            self.create_obstacles(obstacles_params)
+        
+    def get_max_expansions(self):
+        return 8*(len(self.all_points) - len(self.obstacles))
+
     # Checks if x,y is in bounds of environemnt
     def is_in_bounds(self, x, y):
         if (x >= 0 and y >= 0 and x < self.width and y < self.length):
