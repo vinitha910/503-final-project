@@ -16,19 +16,17 @@ from validate import cma_validate, random_validate, human_validate
 import warnings
 warnings.simplefilter("error")
 
-run_id = str(int(time.time()) % 10000000)
-path = "run-data-"+run_id+".csv"
-data_file = open(path, "w")
-csv_writer = csv.writer(data_file, delimiter=',')
-img_path = "progress-"+run_id+".png"
-
 NUM_OBSTACLES = 2
 OBSTACLE_DIM = 4
 M = NUM_OBSTACLES*OBSTACLE_DIM
 
 global_vars = [0, False]
+save_vars = [None, None, None]
 N_RUNS = 0
 HUMAN_RENDER = 1
+DATA_FILE = 0
+IMG_PATH = 1
+CSV_WRITER = 2
 
 def clamp_obs(obs):
     return (obs-(obs-1)*(obs<1)).astype(np.int)
@@ -87,7 +85,7 @@ def run_planner(env_parameters, render=None):
 
         if error or render:
             if render == True:
-                filename = image_path
+                filename = save_vars[IMG_PATH]
             else:
                 filename = render
             vis = Visualizer(env, state_space, robot)
@@ -96,7 +94,7 @@ def run_planner(env_parameters, render=None):
             print("    ", end='')
 
         print("Success:", success, "\tExpansions:", num_expansions, "\tTime:", planning_time)
-        csv_writer.writerow([
+        save_vars[CSV_WRITER].writerow([
             env_parameters,
             error,
             not not render,
@@ -104,20 +102,23 @@ def run_planner(env_parameters, render=None):
             num_expansions,
             planning_time,
             ])
-        data_file.flush()
+        save_vars[DATA_FILE].flush()
 
         return error, success, num_expansions, planning_time
 
-if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Usage: python overall_validate.py <BUG_NO> <random || cma || human>")
-        sys.exit(0)
-    global_vars = [0, False]
+def run_seed(validator_name, prefix):
+    global_vars[N_RUNS] = 0
+    global_vars[HUMAN_RENDER] = False
 
-    BUG_NO[0] = int(sys.argv[1])
-    if sys.argv[2] == "random":
+    run_id = prefix + "-" + str(int(time.time()) % 10000000)
+    path = "run-data-"+run_id+".csv"
+    save_vars[DATA_FILE] = open(path, "w")
+    save_vars[CSV_WRITER] = csv.writer(save_vars[DATA_FILE], delimiter=',')
+    save_vars[IMG_PATH] = "progress-"+run_id+".png"
+
+    if validator_name == "random":
         validator = random_validate
-    elif sys.argv[2] == "cma":
+    elif validator_name == "cma":
         validator = cma_validate
     else:
         global_vars[HUMAN_RENDER] = True
@@ -129,8 +130,34 @@ if __name__ == "__main__":
         print("\nYour planner is valid! We could find no failing tests!")
     else:
         print("\nYour planner is buggy! Check out this failing test:", ", ".join(failing_test.astype(str)))
+
+    n_runs = global_vars[N_RUNS]
+    correct = valid == (BUG_NO[0] == BUG_NONE)
+    save_vars[DATA_FILE].close()
+
     print("Total time (s):", total_time)
-    print("Validity correctly identified:", valid == (BUG_NO[0] == BUG_NONE))
-    print("Num planner runs:", global_vars[N_RUNS])
-    data_file.close()
+    print("Validity correctly identified:", correct)
+    print("Num planner runs:", n_runs)
+
+    return run_id, total_time, correct, n_runs
+
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print("Usage: python overall_validate.py <BUG_NO> <random || cma || human>")
+        sys.exit(0)
+
+    BUG_NO[0] = int(sys.argv[1])
+    validator_name = sys.argv[2]
+    prefix = "bug"+str(BUG_NO[0])+validator_name
+    num_trials = 5
+    results = np.zeros((num_trials, 3))
+    with open(prefix+".csv", "w") as f:
+        for i in range(num_trials):
+            result = run_seed(validator_name, prefix)
+            f.write(",".join(np.array(result)))
+            results[i] = np.array(result[1:])
+    print("\nStatistics for "+prefix+" (total time in seconds, correct, number of planner runs):")
+    print("Mean:", results.mean(0))
+    print("Std:", results.std(0))
+
 
