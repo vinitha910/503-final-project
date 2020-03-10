@@ -154,7 +154,7 @@ if __name__ == "__main__":
     with open(prefix+".csv", "w") as f:
         for i in range(num_trials):
             result = run_seed(validator_name, prefix)
-            f.write(",".join(np.array(result)))
+            f.write(",".join(np.array(result)) + "\n")
             results[i] = np.array(result[1:])
     print("\nStatistics for "+prefix+" (total time in seconds, correct, number of planner runs):")
     print("Mean:", results.mean(0))
