@@ -86,10 +86,10 @@ class AStar():
 
             parent_state = self.state_space.get_coord_from_state_id(parent.state_id)
             
-            if BUG_NO[0] != BUG_INCORRECT_GOAL:
-                if self.is_goal(parent_state):
+            if self.is_goal(parent_state):
+                if BUG_NO[0] != BUG_INCORRECT_GOAL:
                     self.goal = parent
-                    return True, num_expansions, time.time() - start
+                return True, num_expansions, time.time() - start
 
             succs = self.get_succs(parent_state)
             for succ in succs:        
