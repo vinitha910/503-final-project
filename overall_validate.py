@@ -27,7 +27,7 @@ HUMAN_RENDER = 1
 DATA_FILE = 0
 IMG_PATH = 1
 CSV_WRITER = 2
-# use oracle  1    2      3      4     5      6
+# use oracle  1     2      3     4      5     6
 ORACLE_L = [False, True, False, False, True, True]
 
 def clamp_obs(obs):
@@ -75,9 +75,15 @@ def run_planner(env_parameters, render=None):
     else:
         sx, sy, gx, gy = [0.05, 0.05, 0.25, 0.25]
 
-    if not (planner.set_start(sx, sy, pi/4)):
+    # Optimizing orientation
+    if len(env_parameters) > 12:
+        so, go = env_parameters[12], env_parameters[13]
+    else:
+        so, go = pi/4, pi/4
+
+    if not (planner.set_start(sx, sy, so)):
         success = False # no expansions, since initial config was invalid
-    if not (planner.set_goal(gx, gy, pi/4)):
+    if not (planner.set_goal(gx, gy, go)):
         success = False # ditto
 
     # Planner return whether or not it was successful,
@@ -103,7 +109,7 @@ def run_planner(env_parameters, render=None):
                     print('ERROR: Constrained goal')
                     error = True
                 # BUG 1 -- Oracle
-                if len(planner.visited) == env.get_max_expansions():
+                if len(planner.visited) >= env.get_max_expansions() and ORACLE_L[0]:
                     print("ERROR: Expanded every node in the environment")
                     error = True
 
