@@ -81,9 +81,28 @@ def run_planner(env_parameters, render=None):
             success, num_expansions, planning_time = planner.plan()
             if success:
                 path = planner.extract_path()
+
+                # BUG 3 -- Oracle
+                if len(path[0]) == 0:
+                    print("incorrect goal")
+                    error = True
+                # BUG 4 -- Oracle
+                elif not planner.check_consistency(path[0]):
+                    print("path not consistence")
+                    error = True
+
+            else:
+                # BUG 1 -- Oracle
+                if len(planner.visited) == env.get_max_expansions():
+                    print("expanded every node in the environment")
+                    error = True
+
+            # BUG 6 -- Oracle
             if planning_time >= TIMEOUT:
                 print("Planning timed out")
                 error = True
+
+        # BUG 5 -- Oracle
         except Exception:
             print("Unexpected error:", sys.exc_info())
             error = True
