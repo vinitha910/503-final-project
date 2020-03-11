@@ -156,10 +156,17 @@ class AStar():
     def check_consistency(self, path_ids):
         for i in range(len(path_ids) - 1):
             n = self.state_space.get_coord_from_state_id(i)
-            h_n = self.state_space.manhattan_distance(n, self.goal_state)
+            if BUG_NO[0] == BUG_INCONSISTENT_HEURISTIC:
+                h_n = self.state_space.manhattan_distance(n, self.goal_state)
+            else:
+                h_n = self.state_space.get_distance(n, self.goal_state)
 
             nprime = self.state_space.get_coord_from_state_id(i + 1)
-            h_nprime = self.state_space.manhattan_distance(nprime, self.goal_state)
+            
+            if BUG_NO[0] == BUG_INCONSISTENT_HEURISTIC:
+                h_nprime = self.state_space.manhattan_distance(nprime, self.goal_state)
+            else:
+                h_nprime = self.state_space.get_distance(nprime, self.goal_state)
 
             g = self.state_space.get_distance(n, nprime)
 
