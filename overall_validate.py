@@ -89,9 +89,10 @@ def run_planner(env_parameters, render=None):
             error = True
 
     if error or render:
-        if render == True:
+        filename = None
+        if error or (render == True):
             filename = save_vars[IMG_PATH]
-        else:
+        elif render is not None:
             filename = render
         vis = Visualizer(env, state_space, robot)
         vis.visualize(path[1], filename=filename, start_end=[sx, sy, gx, gy])
