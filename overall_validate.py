@@ -28,7 +28,8 @@ DATA_FILE = 0
 IMG_PATH = 1
 CSV_WRITER = 2
 # use oracle  1     2      3     4      5     6
-ORACLE_L = [False, True, False, False, True, True]
+#ORACLE_L = [False, True, False, False, True, True]
+ORACLE_L = [False, False, False, False, True, True]
 
 def clamp_obs(obs):
     o = obs.copy()
@@ -71,7 +72,7 @@ def run_planner(env_parameters, render=None):
 
     # Input x (m), y (m)
     if len(env_parameters) > 8:
-        sx, sy, gx, gy = env_parameters[8:12]
+        sx, sy, gx, gy = env_parameters[8:12] / 116 + 0.02 # ensure b/w 0.02 and 0.28
     else:
         sx, sy, gx, gy = [0.05, 0.05, 0.25, 0.25]
 
