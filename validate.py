@@ -50,7 +50,7 @@ def cma_validate(planner_fn):
     return True, None
 
 def random_validate(planner_fn):
-    max_iters = 300
+    max_iters = 500
     for i in range(max_iters):
         env_parameters = random_params()
         error, success, num_expansions, planning_time = planner_fn(env_parameters, True)
