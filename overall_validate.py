@@ -152,17 +152,24 @@ if __name__ == "__main__":
         print("Usage: python overall_validate.py <BUG_NO> <random || cma || human>")
         sys.exit(0)
 
-    BUG_NO[0] = int(sys.argv[1])
+    bugnum = int(sys.argv[1])
     validator_name = sys.argv[2]
-    prefix = "bug"+str(BUG_NO[0])+validator_name
-    num_trials = 5
+    if bugnum < 0:
+        bugnum = np.random.choice([0,5,6]) # TODO add more once these are ready
+        num_trials = 1
+        prefix = "bugRANDOM"+validator_name
+    else:
+        num_trials = 5
+        prefix = "bug"+str(bugnum)+validator_name
+    BUG_NO[0] = bugnum
+
     results = np.zeros((num_trials, 3))
     with open(prefix+".csv", "w") as f:
         for i in range(num_trials):
             result = run_seed(validator_name, prefix)
             f.write(",".join(np.array(result)) + "\n")
             results[i] = np.array(result[1:])
-    print("\nStatistics for "+prefix+" (total time in seconds, correct, number of planner runs):")
+    print("\nStatistics for "+prefix+", bug "+str(bugnum)+" (total time in seconds, correct, number of planner runs):")
     print("Mean:", results.mean(0))
     print("Std:", results.std(0))
 
