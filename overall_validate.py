@@ -27,6 +27,8 @@ HUMAN_RENDER = 1
 DATA_FILE = 0
 IMG_PATH = 1
 CSV_WRITER = 2
+# use oracle  1    2      3      4     5      6
+ORACLE_L = [False, True, False, False, True, True]
 
 def clamp_obs(obs):
     o = obs.copy()
@@ -38,9 +40,10 @@ def run_planner(env_parameters, render=None):
     global_vars[N_RUNS] += 1
 
     resolution_m = 0.01
-    obs_params = clamp_obs(env_parameters[:M])
-    with open("temp-data-params.txt", "w") as f:
-        f.write(",".join(obs_params.astype(str)))
+    if not ORACLE_L[1]:
+        obs_params = clamp_obs(env_parameters[:M])
+        with open("temp-data-params.txt", "w") as f:
+            f.write(",".join(obs_params.astype(str)))
 
     # Statespace can take a PointRobot, SquareRobot, RectangleRobot objects
     # robot = PointRobot(0, 0)
@@ -52,7 +55,10 @@ def run_planner(env_parameters, render=None):
     # Takes discrete values, divide continuous values by resolution
     # Parameters: environment length, width, 2D array with obstacle parameters
     # e.g. [[l1, w1, x1, y1], [l2, w2, x2, y2],..., [ln, wn, xn, yn]]
-    env = Environment(30, 30, [obs_params[:4], obs_params[4:8]])
+    if ORACLE_L[1]:
+        env = Environment(30, 30, [])
+    else:
+        env = Environment(30, 30, [obs_params[:4], obs_params[4:8]])
 
     # Parameters: resolution (m), number of theta values, robot object,
     # and environment object
@@ -83,24 +89,29 @@ def run_planner(env_parameters, render=None):
                 path = planner.extract_path()
 
                 # BUG 3 -- Oracle
-                if len(path[0]) == 0:
-                    print("incorrect goal")
+                if len(path[0]) == 0 and ORACLE_L[2]:
+                    print("ERROR: Incorrect goal")
                     error = True
                 # BUG 4 -- Oracle
-                elif not planner.check_consistency(path[0]):
-                    print("path not consistence")
+                elif (not planner.check_consistency(path[0])) and ORACLE_L[3]:
+                    print("ERROR: Path not consistence")
                     error = True
 
             else:
+                # BUG 2 -- Oracle
+                if ORACLE_L[1]:
+                    print('ERROR: Constrained goal')
+                    error = True
                 # BUG 1 -- Oracle
                 if len(planner.visited) == env.get_max_expansions():
-                    print("expanded every node in the environment")
+                    print("ERROR: Expanded every node in the environment")
                     error = True
 
             # BUG 6 -- Oracle
             if planning_time >= TIMEOUT:
                 print("Planning timed out")
-                error = True
+                if ORACLE_L[5]:
+                    error = True
 
         # BUG 5 -- Oracle
         except Exception:

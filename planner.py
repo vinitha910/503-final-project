@@ -126,7 +126,7 @@ class AStar():
 
     def extract_path(self):
         if self.goal.state_id == self.start.state_id:
-            return []
+            return [], []
 
         state_id = self.goal.state_id 
         state = self.state_space.get_coord_from_state_id(state_id)

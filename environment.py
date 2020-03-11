@@ -15,6 +15,8 @@ class Environment:
         
         if obstacles_params != []:
             self.create_obstacles(obstacles_params)
+        else:
+            self.distance_map = dict(zip(self.all_points, np.array([1000.0 for i in range(len(self.all_points))])))
         
     def get_max_expansions(self):
         return 8*(len(self.all_points) - len(self.obstacles))

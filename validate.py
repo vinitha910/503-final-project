@@ -1,10 +1,10 @@
 import numpy as np
 from cma import CMA
 
-OPT_DIM = 8
+OPT_DIM = 12#8
 
 def random_params():
-    return (np.random.uniform(low=0., high=1., size=OPT_DIM) * [4, 4, 10, 10, 4, 4, 10, 10]) * 3
+    return (np.random.uniform(low=0., high=1., size=OPT_DIM) * [4, 4, 10, 10, 4, 4, 10, 10, 10, 10, 10, 10]) * 3
 
 def cma_validate(planner_fn):
     found_error = False
