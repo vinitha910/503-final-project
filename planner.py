@@ -167,7 +167,7 @@ class AStar():
 
             g = self.state_space.get_distance(n, nprime)
 
-            if h_n > g + h_nprime:
+            if h_n > g + h_nprime + 0.0000001: # Avoid floating point rounding errors
                 return False
 
         return True
