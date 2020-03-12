@@ -29,7 +29,7 @@ IMG_PATH = 1
 CSV_WRITER = 2
 # use oracle  1     2      3     4      5     6
 #ORACLE_L = [False, True, False, False, True, True]
-ORACLE_L = [False, False, False, False, True, True]
+ORACLE_L = [True, False, True, True, True, True]
 
 def clamp_obs(obs):
     o = obs.copy()
@@ -110,7 +110,7 @@ def run_planner(env_parameters, render=None):
                     print('ERROR: Constrained goal')
                     error = True
                 # BUG 1 -- Oracle
-                if len(planner.visited) >= env.get_max_expansions() and ORACLE_L[0]:
+                if len(planner.visited) >= state_space.get_max_expansions() and ORACLE_L[0]:
                     print("ERROR: Expanded every node in the environment")
                     error = True
 
@@ -192,7 +192,7 @@ if __name__ == "__main__":
     bugnum = int(sys.argv[1])
     validator_name = sys.argv[2]
     if bugnum < 0:
-        bugnum = np.random.choice([0,5,6]) # TODO add more once these are ready
+        bugnum = np.random.choice([0,4]) # TODO add more once these are ready
         num_trials = 1
         prefix = "bugRANDOM"+validator_name
     else:
