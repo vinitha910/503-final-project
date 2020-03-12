@@ -11,10 +11,12 @@ def cma_validate(planner_fn):
     found_error = False
     failing_test = None
     def f(env_parameters, render=None):
+        nonlocal found_error
+        nonlocal failing_test
+        if found_error:
+            return 0 # Skip doing these extra evals; we already found a bug
         error, success, num_expansions, planning_time = planner_fn(env_parameters, render)
         if error:
-            nonlocal found_error
-            nonlocal failing_test
             found_error = True
             failing_test = env_parameters
         return -num_expansions
