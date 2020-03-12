@@ -191,14 +191,15 @@ if __name__ == "__main__":
 
     bugnum = int(sys.argv[1])
     validator_name = sys.argv[2]
+    num_trials = 5
     if bugnum < 0:
         bugnum = np.random.choice([0,4]) # TODO add more once these are ready
-        num_trials = 1
         prefix = "bugRANDOM"+validator_name
     else:
-        num_trials = 5
         prefix = "bug"+str(bugnum)+validator_name
     BUG_NO[0] = bugnum
+    if validator_name == "human":
+        num_trials = 1
 
     results = np.zeros((num_trials, 3))
     with open(prefix+".csv", "w") as f:
