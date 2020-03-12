@@ -96,7 +96,7 @@ def run_planner(env_parameters, render=None):
                 path = planner.extract_path()
 
                 # BUG 3 -- Oracle
-                if len(path[0]) == 0 and ORACLE_L[2]:
+                if path is None and ORACLE_L[2]:
                     print("ERROR: Incorrect goal")
                     error = True
                 # BUG 4 -- Oracle
@@ -132,6 +132,8 @@ def run_planner(env_parameters, render=None):
         else:
             filename = render
         vis = Visualizer(env, state_space, robot)
+        if path is None:
+            path = ([],[])
         vis.visualize(path[1], filename=filename, start_end=[sx, sy, gx, gy])
     else:
         print("    ", end='')
@@ -193,7 +195,7 @@ if __name__ == "__main__":
     validator_name = sys.argv[2]
     num_trials = 5
     if bugnum < 0:
-        bugnum = np.random.choice([0,4]) # TODO add more once these are ready
+        bugnum = np.random.choice([0,3,4,5,6])
         prefix = "bugRANDOM"+validator_name
     else:
         prefix = "bug"+str(bugnum)+validator_name

@@ -136,13 +136,8 @@ class AStar():
         state_ids = [state_id]
 
         if not state_id in self.visited:
-            # just draw a line from start to finish
-            # state_id = self.start.state_id
-            # state = self.state_space.get_coord_from_state_id(state_id)
-            # states.append([state.x, state.y, theta_rad])
-            # return states[::-1]
-            return [], []
-            
+            return None
+
         while self.visited[state_id].prev_id != -1:
             state_id = self.visited[state_id].prev_id
             state = self.state_space.get_coord_from_state_id(state_id)
@@ -150,8 +145,8 @@ class AStar():
                 self.state_space.discrete_angle_to_continuous(state.theta)
             states.append([state.x, state.y, theta_rad])
             state_ids.append(state_id)
-            if len(state_ids) > 10000:
-                return [], [] # Must be a loop in the graph somewhere
+            if len(state_ids) > 100000:
+                return None
 
         return state_ids[::-1], states[::-1]
 
