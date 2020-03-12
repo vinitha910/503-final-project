@@ -28,8 +28,8 @@ DATA_FILE = 0
 IMG_PATH = 1
 CSV_WRITER = 2
 # use oracle  1     2      3     4      5     6
-ORACLE_L = [False, True, False, False, True, True]
-#ORACLE_L = [False, False, True, True, True, True]
+#ORACLE_L = [False, True, False, False, True, True]
+ORACLE_L = [False, False, True, True, True, True]
 
 def clamp_obs(obs):
     o = obs.copy()
@@ -43,6 +43,7 @@ def run_planner(env_parameters, render=None):
     resolution_m = 0.01
     with open("temp-data-params.txt", "w") as f:
         f.write(",".join(env_parameters.astype(str)))
+    obs_params = clamp_obs(env_parameters[:M])
 
     # Statespace can take a PointRobot, SquareRobot, RectangleRobot objects
     # robot = PointRobot(0, 0)
