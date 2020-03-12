@@ -18,9 +18,6 @@ class Environment:
         else:
             self.distance_map = dict(zip(self.all_points, np.array([1000.0 for i in range(len(self.all_points))])))
         
-    def get_max_expansions(self):
-        return 8*(len(self.all_points) - len(self.obstacles))
-
     # Checks if x,y is in bounds of environemnt
     def is_in_bounds(self, x, y):
         if (x >= 0 and y >= 0 and x < self.width and y < self.length):

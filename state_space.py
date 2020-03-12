@@ -114,7 +114,7 @@ class StateSpace(object):
     def in_collision(self, x, y, theta):
         x_m, y_m, theta_rad = \
             self.discrete_coor_to_continuous(x, y, theta)
-
+            
         collision_circles = self.robot.get_collision_circles(x_m, y_m, theta_rad)
         for x_m, y_m in collision_circles:
             x, y = self.continous_position_to_discrete(x_m, y_m)
@@ -138,3 +138,6 @@ class StateSpace(object):
                 return False
 
         return True
+
+    def get_max_expansions(self):
+        return np.sum(np.array(list(self.env.distance_map.values())) > self.robot.radius_m)
