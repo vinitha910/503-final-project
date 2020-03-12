@@ -45,7 +45,7 @@ class AStar():
     def is_goal(self, state):
         if BUG_NO[0] == BUG_CONSTRAINED_GOAL:
             x_m, y_m, theta_rad = self.state_space.discrete_coor_to_continuous(state.x, state.y, state.theta)
-            if np.linalg.norm([x_m, y_m, theta_rad] - self.goal_cont) < 0.39:
+            if np.linalg.norm([x_m, y_m] - self.goal_cont[:2]) < 0.0001 and theta_rad - self.goal_cont[-1] < 0.39:
                 return True
             return False
         
