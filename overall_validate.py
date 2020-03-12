@@ -29,7 +29,7 @@ IMG_PATH = 1
 CSV_WRITER = 2
 # use oracle  1     2      3     4      5     6
 #ORACLE_L = [False, True, False, False, True, True]
-ORACLE_L = [True, False, True, True, True, True]
+ORACLE_L = [False, False, True, True, True, True]
 
 def clamp_obs(obs):
     o = obs.copy()
