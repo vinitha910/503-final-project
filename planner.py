@@ -150,6 +150,8 @@ class AStar():
                 self.state_space.discrete_angle_to_continuous(state.theta)
             states.append([state.x, state.y, theta_rad])
             state_ids.append(state_id)
+            if len(state_ids) > 10000:
+                return [], [] # Must be a loop in the graph somewhere
 
         return state_ids[::-1], states[::-1]
 

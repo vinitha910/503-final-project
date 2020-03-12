@@ -92,6 +92,7 @@ def run_planner(env_parameters, render=None):
         try:
             success, num_expansions, planning_time = planner.plan()
             if success:
+                print("Extracting path")
                 path = planner.extract_path()
 
                 # BUG 3 -- Oracle
