@@ -7,7 +7,7 @@ import time, sys
 import numpy as np
 from bug_config import *
 
-TIMEOUT = 60.0
+TIMEOUT = 15.0
 
 class AStar():
     def __init__(self, state_space):
