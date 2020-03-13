@@ -1,0 +1,70 @@
+
+NATHAN's RUNS
+
+Statistics for bugRANDOMhuman, bug 0 (total time in seconds, correct, number of planner runs):
+Mean: [126.16738892   1.          17.        ]
+Std: [0. 0. 0.]
+
+Statistics for bugRANDOMhuman, bug 2 (total time in seconds, correct, number of planner runs):
+Mean: [10.76591587  1.          1.        ]
+Std: [0. 0. 0.]
+
+Statistics for bugRANDOMhuman, bug 3 (total time in seconds, correct, number of planner runs):
+Mean: [68.31113386  1.          3.        ]
+Std: [0. 0. 0.]
+
+Statistics for bugRANDOMhuman, bug 4 (total time in seconds, correct, number of planner runs):
+Mean: [231.0009799   1.         13.       ]
+Std: [0. 0. 0.]
+
+Statistics for bugRANDOMhuman, bug 5 (total time in seconds, correct, number of planner runs):
+Mean: [58.95891595  1.          3.        ]
+Std: [0. 0. 0.]
+
+Statistics for bugRANDOMhuman, bug 6 (total time in seconds, correct, number of planner runs):
+Mean: [18.64746237  1.          1.        ]
+Std: [0. 0. 0.]
+
+
+
+BOLING's RUNS
+
+Statistics for bugRANDOMhuman, bug 0 (total time in seconds, correct, number of planner runs):
+828.04 1.0 30.
+
+Statistics for bugRANDOMhuman, bug 2 (total time in seconds, correct, number of planner runs):
+Mean: [17.16250086  1.          1.        ]
+Std: [0. 0. 0.]
+
+Statistics for bugRANDOMhuman, bug 3 (total time in seconds, correct, number of planner runs):
+Mean: [11.21985316  1.          1.        ]
+Std: [0. 0. 0.]
+
+Statistics for bugRANDOMhuman, bug 4 (total time in seconds, correct, number of planner runs):
+Mean: [54.7857151  1.         5.       ]
+Std: [0. 0. 0.]
+
+Statistics for bugRANDOMhuman, bug 5 (total time in seconds, correct, number of planner runs):
+Mean: [174.71431994   0.           5.        ]
+Std: [0. 0. 0.]
+
+AND ANOTHER ONE FROM NATHAN:
+
+Statistics for bugRANDOMhuman, bug 6 (total time in seconds, correct, number of planner runs):
+Mean: [23.73326039  1.          4.        ]
+Std: [0. 0. 0.]
+
+
+DOING THE MATH:
+Bug 0
+480 \pm 350
+Bug 2
+14.0 \pm 3.2
+Bug 3
+40. \pm 29.
+Bug 4
+143. \pm 55.
+Bug 5
+117 \pm 58.
+Bug 6
+21.2 \pm 2.5
